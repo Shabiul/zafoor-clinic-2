@@ -9,8 +9,8 @@
 }
 
 .fab {
-  width: 64px;
-  height: 64px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: var(--glass-strong);
   backdrop-filter: blur(var(--blur-md));
@@ -19,18 +19,18 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 10px 26px rgba(74, 58, 51, 0.16);
+  box-shadow: 0 6px 18px rgba(74, 58, 51, 0.14);
   transition: transform 0.25s, box-shadow 0.25s;
 }
 
 .fab:hover {
   transform: scale(1.08);
-  box-shadow: 0 12px 30px rgba(74, 58, 51, 0.18), 0 0 0 1px rgba(201, 168, 106, 0.32);
+  box-shadow: 0 8px 22px rgba(74, 58, 51, 0.18), 0 0 0 1px rgba(201, 168, 106, 0.32);
 }
 
 .fab svg {
-  width: 34px;
-  height: 34px;
+  width: 22px;
+  height: 22px;
 }
 
 .fab-instagram {
@@ -126,22 +126,24 @@
   border-color: var(--color-primary);
 }
 
-@media (max-width: 420px) {
+@media (max-width: 640px) {
   .social-fabs {
-    bottom: 16px;
-    right: 16px;
-    gap: 10px;
+    bottom: 12px;
+    right: 10px;
+    gap: 8px;
   }
   .fab {
-    width: 56px;
-    height: 56px;
+    width: 36px;
+    height: 36px;
   }
   .fab svg {
-    width: 28px;
-    height: 28px;
+    width: 18px;
+    height: 18px;
   }
   .wa-chat {
-    bottom: 148px;
-    right: 16px;
+    bottom: 110px;
+    right: 10px;
+    left: 10px;
+    width: calc(100vw - 20px);
   }
 }

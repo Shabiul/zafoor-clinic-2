@@ -25,6 +25,8 @@ const fallbackServices = servicesSection.departments.flatMap((dept) =>
     description: card.enDesc || card.brief,
     price: null,
     durationMinutes: 30,
+    departmentId: dept.id,
+    departmentLabel: dept.tabLabel,
   }))
 );
 
@@ -133,6 +135,7 @@ export default function Booking() {
 
   const [serviceId, setServiceId] = useState("");
   const [doctorId, setDoctorId] = useState("");
+  const [deptFilter, setDeptFilter] = useState("all");
   const [date, setDate] = useState(() => istDateString());
 
   const [availability, setAvailability] = useState(null);
@@ -446,28 +449,72 @@ export default function Booking() {
                     </div>
                   )}
 
-                  <ul className="booking-services">
-                    {catalog.services.map((s) => (
-                      <li key={s.id}>
-                        <button
-                          type="button"
-                          className={`booking-card${String(s.id) === serviceId ? " selected" : ""}`}
-                          onClick={() => chooseService(s.id)}
-                          disabled={!doctorId}
-                        >
-                          <span className="booking-card-name">{s.name}</span>
-                          {s.description && (
-                            <span className="booking-card-desc">{s.description}</span>
-                          )}
-                          <span className="booking-card-meta">
-                            {typeof s.price === "number" && <span>&#8377;{s.price}</span>}
-                            {typeof s.durationMinutes === "number" && (
-                              <span>{s.durationMinutes} min</span>
-                            )}
-                          </span>
-                        </button>
-                      </li>
+                  <div className="booking-dept-tabs" role="tablist" aria-label="Filter treatments by department">
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={deptFilter === "all"}
+                      className={`booking-dept-btn${deptFilter === "all" ? " active" : ""}`}
+                      onClick={() => setDeptFilter("all")}
+                    >
+                      All
+                    </button>
+                    {servicesSection.departments.map((d) => (
+                      <button
+                        key={d.id}
+                        type="button"
+                        role="tab"
+                        aria-selected={deptFilter === d.id}
+                        className={`booking-dept-btn${deptFilter === d.id ? " active" : ""}`}
+                        onClick={() => setDeptFilter(d.id)}
+                      >
+                        {d.tabLabel}
+                      </button>
                     ))}
+                  </div>
+
+                  <ul className="booking-services">
+                    {catalog.services
+                      .filter((s) => {
+                        if (deptFilter === "all") return true;
+                        if (s.departmentId) return s.departmentId === deptFilter;
+                        if (String(s.id).startsWith(deptFilter)) return true;
+                        const matchedDept = servicesSection.departments.find((d) =>
+                          d.cards.some((c) => c.enTitle.toLowerCase() === s.name.toLowerCase())
+                        );
+                        return matchedDept?.id === deptFilter;
+                      })
+                      .map((s) => {
+                        const isSelected = String(s.id) === serviceId;
+                        return (
+                          <li key={s.id}>
+                            <button
+                              type="button"
+                              className={`booking-card${isSelected ? " selected" : ""}`}
+                              onClick={() => chooseService(s.id)}
+                              disabled={!doctorId}
+                            >
+                              <div className="booking-card-top">
+                                <span className="booking-card-name">{s.name}</span>
+                                <span className="booking-card-indicator" aria-hidden="true">
+                                  {isSelected ? "✓" : "+"}
+                                </span>
+                              </div>
+                              {s.description && (
+                                <span className="booking-card-desc">{s.description}</span>
+                              )}
+                              <div className="booking-card-meta">
+                                {typeof s.price === "number" && (
+                                  <span className="booking-badge price">&#8377;{s.price}</span>
+                                )}
+                                {typeof s.durationMinutes === "number" && (
+                                  <span className="booking-badge duration">{s.durationMinutes} MIN</span>
+                                )}
+                              </div>
+                            </button>
+                          </li>
+                        );
+                      })}
                   </ul>
                 </>
               )}
