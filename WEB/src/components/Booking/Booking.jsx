@@ -733,7 +733,12 @@ export default function Booking() {
                     {submitting ? booking.detailsStep.submitting : booking.detailsStep.submit}
                   </button>
                 </div>
-                <p className="booking-hint">{booking.detailsStep.disclaimer}</p>
+                <p className="booking-hint">
+                  By confirming, you agree to be contacted about this appointment. Your information is handled according to our{" "}
+                  <a href="/privacy-policy/" className="booking-privacy-link">
+                    Privacy Policy
+                  </a>.
+                </p>
               </form>
             </div>
           )}

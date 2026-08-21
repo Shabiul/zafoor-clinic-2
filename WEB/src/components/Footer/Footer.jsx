@@ -83,7 +83,13 @@ export default function Footer() {
         ))}
       </div>
       <div className="footer-bottom">
-        <p>{footer.copyright}</p>
+        <div className="footer-bottom-links">
+          <p>{footer.copyright}</p>
+          <span className="footer-separator" aria-hidden="true">&middot;</span>
+          <a href="/privacy-policy/" className="footer-legal-link">
+            Privacy Policy
+          </a>
+        </div>
         <p className="footer-credit">
           Developed by{" "}
           <a href="https://naazailabs.com" target="_blank" rel="noopener noreferrer">

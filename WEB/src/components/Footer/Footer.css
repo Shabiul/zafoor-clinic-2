@@ -53,8 +53,33 @@
   font-size: 0.82rem;
 }
 
+.footer-bottom-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.footer-separator {
+  color: var(--color-sagegold-deep);
+  opacity: 0.6;
+}
+
+.footer-legal-link {
+  color: var(--color-ink-deep);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-size: 0.82rem;
+  transition: color 0.2s ease;
+}
+
+.footer-legal-link:hover {
+  color: var(--color-primary);
+}
+
 .footer-credit {
-  margin-top: 4px;
+  margin-top: 6px;
   font-size: 0.8rem;
 }
 
