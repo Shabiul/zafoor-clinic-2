@@ -13,22 +13,38 @@ import {
   ExternalLink,
   Download,
   Eye,
+  Clock,
+  CheckCircle2,
+  Phone,
+  Plus,
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { alertSeverityColors, alertSeverityLabels, documentCategoryLabels } from "@/lib/labels"
-import { formatDate, formatDateTime } from "@/lib/format"
 import type { getPatientById, getPatientPrescriptions } from "@/actions/patients"
 import type { getEncountersForPatient } from "@/actions/encounters"
 import type { getClinicalReports } from "@/actions/reports"
 import type { getPatientRecords } from "@/actions/records"
+import type { getAppointmentsForPatient } from "@/actions/appointments"
+import type { getPatientCrmData } from "@/actions/crm"
+import {
+  alertSeverityColors,
+  alertSeverityLabels,
+  documentCategoryLabels,
+  appointmentStatusColors,
+  appointmentStatusLabels,
+  appointmentTypeLabels,
+  followUpStatusLabels,
+} from "@/lib/labels"
+import { formatDate, formatDateTime } from "@/lib/format"
 
 type Patient = NonNullable<Awaited<ReturnType<typeof getPatientById>>>
 type Encounters = Awaited<ReturnType<typeof getEncountersForPatient>>
 type Prescriptions = Awaited<ReturnType<typeof getPatientPrescriptions>>
 type Reports = Awaited<ReturnType<typeof getClinicalReports>>
 type Records = Awaited<ReturnType<typeof getPatientRecords>>
+type Appointments = Awaited<ReturnType<typeof getAppointmentsForPatient>>
+type FollowUps = Awaited<ReturnType<typeof getPatientCrmData>>["followUps"]
 
 export function OverviewTab({
   patient,
@@ -36,12 +52,16 @@ export function OverviewTab({
   prescriptions = [],
   reports = [],
   records,
+  appointments = [],
+  followUps = [],
 }: {
   patient: Patient
   encounters?: Encounters
   prescriptions?: Prescriptions
   reports?: Reports
   records?: Records
+  appointments?: Appointments
+  followUps?: FollowUps
 }) {
   const activeAlerts = patient.medicalAlerts.filter((a) => a.active)
   const primaryInsurance = patient.insurances.find((i) => i.isPrimary) ?? patient.insurances[0]
@@ -73,10 +93,20 @@ export function OverviewTab({
         </Card>
       )}
 
-      {/* ── 2. Quick Clinical Metrics Grid ─────────────────────────────── */}
+      {/* ── 2. Quick Clinical & Appointment Metrics Grid ────────────────── */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Card className="p-4 flex items-center gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <Calendar className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="text-2xl font-bold">{appointments.length}</p>
+            <p className="text-xs text-muted-foreground">Appointments</p>
+          </div>
+        </Card>
+
+        <Card className="p-4 flex items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400">
             <Stethoscope className="h-5 w-5" />
           </div>
           <div>
@@ -104,17 +134,119 @@ export function OverviewTab({
             <p className="text-xs text-muted-foreground">Docs & Reports</p>
           </div>
         </Card>
-
-        <Card className="p-4 flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400">
-            <HeartPulse className="h-5 w-5" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold">{patient.allergies.length + patient.chronicDiseases.length}</p>
-            <p className="text-xs text-muted-foreground">Allergies & Conditions</p>
-          </div>
-        </Card>
       </div>
+
+      {/* ── 3. Appointments & Scheduled Follow-ups ──────────────────────── */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between pb-3">
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-primary" />
+            <CardTitle className="text-base font-semibold">Appointments & Consultations Schedule</CardTitle>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1 text-xs"
+            nativeButton={false}
+            render={
+              <Link href={`/appointments?patientId=${patient.id}&open=true`}>
+                <Plus className="h-3.5 w-3.5" /> Book Appointment
+              </Link>
+            }
+          />
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {appointments.length === 0 ? (
+            <div className="py-6 text-center text-sm text-muted-foreground">
+              No appointments on record for this patient.
+            </div>
+          ) : (
+            <div className="space-y-2.5">
+              {appointments.slice(0, 3).map((apt) => (
+                <div
+                  key={apt.id}
+                  className="rounded-lg border bg-muted/20 p-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-xs hover:bg-muted/30 transition-colors"
+                >
+                  <div className="space-y-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-semibold text-sm text-foreground">
+                        {apt.service?.name || "Doctor Consultation"}
+                      </span>
+                      <span className="font-mono text-muted-foreground">({apt.appointmentCode})</span>
+                      <Badge
+                        variant="secondary"
+                        className={appointmentStatusColors[apt.status] || "bg-muted"}
+                      >
+                        {appointmentStatusLabels[apt.status] || apt.status}
+                      </Badge>
+                      <Badge variant="outline" className="text-[10px]">
+                        {apt.source === "WEBSITE" ? "🌐 Website" : "🏥 Clinic"}
+                      </Badge>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-3 text-muted-foreground">
+                      <span className="flex items-center gap-1 font-medium text-foreground">
+                        <Clock className="h-3 w-3 text-primary" /> {formatDateTime(apt.scheduledAt)}
+                      </span>
+                      <span>·</span>
+                      <span>Dr. {apt.doctor.name}</span>
+                      {apt.reason && (
+                        <>
+                          <span>·</span>
+                          <span className="italic">Note: {apt.reason}</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 self-start sm:self-auto">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-7 text-xs gap-1"
+                      nativeButton={false}
+                      render={
+                        <Link href={`/patients/${patient.id}/encounters/new?appointmentId=${apt.id}`}>
+                          <Stethoscope className="h-3 w-3" /> Start EMR
+                        </Link>
+                      }
+                    />
+                  </div>
+                </div>
+              ))}
+
+              {appointments.length > 3 && (
+                <p className="text-xs text-muted-foreground text-center pt-1">
+                  Showing latest 3 of {appointments.length} appointments. View the Appointments tab for complete history.
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Follow-ups strip */}
+          {followUps && followUps.length > 0 && (
+            <div className="mt-4 pt-3 border-t">
+              <div className="flex items-center gap-2 mb-2">
+                <Clock className="h-3.5 w-3.5 text-purple-600" />
+                <span className="font-semibold text-xs text-foreground">Scheduled Follow-ups:</span>
+              </div>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {followUps.map((f) => (
+                  <div key={f.id} className="p-2 rounded border bg-purple-50/40 dark:bg-purple-950/20 text-xs flex justify-between items-center">
+                    <div>
+                      <span className="font-medium text-foreground">Due: {formatDate(f.dueDate)}</span>
+                      {f.notes && <p className="text-muted-foreground truncate max-w-xs">{f.notes}</p>}
+                    </div>
+                    <Badge variant="outline" className="text-[10px]">
+                      {followUpStatusLabels[f.status] || f.status}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* ── 3. Previous Consultations (Encounters) History ──────────────── */}
       <Card>

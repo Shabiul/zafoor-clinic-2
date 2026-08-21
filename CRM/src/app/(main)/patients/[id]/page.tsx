@@ -8,9 +8,11 @@ import { getClinicalHistory } from "@/actions/history"
 import { getClinicalReports } from "@/actions/reports"
 import { getPatientRecords } from "@/actions/records"
 import { getPatientBillingSummary } from "@/actions/billing"
+import { getAppointmentsForPatient } from "@/actions/appointments"
 import { patientDisplayName } from "@/lib/format"
 import { PatientHeader } from "@/components/patients/profile/patient-header"
 import { OverviewTab } from "@/components/patients/profile/overview-tab"
+import { PatientAppointmentsTab } from "@/components/patients/profile/appointments-tab"
 import { FamilyInsuranceTab } from "@/components/patients/profile/family-insurance-tab"
 import { MedicalTab } from "@/components/patients/profile/medical-tab"
 import { DocumentsTab } from "@/components/patients/profile/documents-tab"
@@ -44,6 +46,7 @@ export default async function PatientProfilePage({
     reports,
     records,
     billingSummary,
+    appointments,
   ] = await Promise.all([
     getPatientTimeline(id),
     getPatientCrmData(id),
@@ -55,6 +58,7 @@ export default async function PatientProfilePage({
     getClinicalReports(id),
     getPatientRecords(id),
     getPatientBillingSummary(id),
+    getAppointmentsForPatient(id),
   ])
 
   const fullName = patientDisplayName(patient)
@@ -66,6 +70,7 @@ export default async function PatientProfilePage({
       <Tabs defaultValue="overview">
         <TabsList className="flex-wrap h-auto">
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="appointments">Appointments ({appointments.length})</TabsTrigger>
           <TabsTrigger value="encounters">Consultations ({encounters.length})</TabsTrigger>
           <TabsTrigger value="prescriptions">Prescriptions ({prescriptions.length})</TabsTrigger>
           <TabsTrigger value="documents">Documents ({patient.documents.length})</TabsTrigger>
@@ -86,6 +91,15 @@ export default async function PatientProfilePage({
             prescriptions={prescriptions}
             reports={reports}
             records={records}
+            appointments={appointments}
+            followUps={crmData.followUps}
+          />
+        </TabsContent>
+        <TabsContent value="appointments" className="mt-4">
+          <PatientAppointmentsTab
+            patientId={id}
+            appointments={appointments}
+            followUps={crmData.followUps}
           />
         </TabsContent>
         <TabsContent value="encounters" className="mt-4">

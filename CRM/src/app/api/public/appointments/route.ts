@@ -11,13 +11,25 @@ const SLOT_TAKEN = "This slot was just booked. Please choose another slot."
 
 const bookingSchema = z.object({
   firstName: z.string().trim().min(1, "First name is required"),
-  lastName: z.string().trim().optional(),
+  lastName: z
+    .preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().trim().optional()),
   phone: z
     .string()
     .trim()
     .refine((v) => INDIAN_MOBILE.test(v.replace(/[\s-]/g, "")), "Enter a valid 10-digit Indian mobile number"),
-  email: z.string().trim().email("Enter a valid email address").optional().or(z.literal("")),
-  gender: z.enum(["MALE", "FEMALE", "OTHER"], "Gender must be MALE, FEMALE or OTHER").optional(),
+  email: z
+    .preprocess(
+      (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
+      z.string().trim().email("Enter a valid email address").optional()
+    ),
+  gender: z
+    .preprocess((v) => {
+      if (typeof v === "string") {
+        const up = v.trim().toUpperCase()
+        return up === "" ? undefined : up
+      }
+      return v
+    }, z.enum(["MALE", "FEMALE", "OTHER"]).optional()),
   serviceId: z.string().trim().min(1, "Service is required"),
   doctorId: z.string().trim().min(1, "Doctor is required"),
   scheduledAt: z
@@ -25,8 +37,12 @@ const bookingSchema = z.object({
     .trim()
     .min(1, "Appointment time is required")
     .refine((v) => !Number.isNaN(new Date(v).getTime()), "Appointment time is invalid")
-    .refine((v) => new Date(v).getTime() > Date.now(), "Appointment time must be in the future"),
-  reason: z.string().trim().optional(),
+    .refine(
+      (v) => new Date(v).getTime() > Date.now() - 5 * 60 * 1000,
+      "Appointment time must be in the future"
+    ),
+  reason: z
+    .preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().trim().optional()),
   durationMinutes: z.number().int().positive().optional(),
 })
 

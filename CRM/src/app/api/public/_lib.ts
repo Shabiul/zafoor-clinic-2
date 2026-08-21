@@ -22,28 +22,40 @@ export const ACTIVE_STATUSES = [
  */
 export const ALLOWED_ORIGINS: readonly string[] = [
   "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:5175",
+  "http://localhost:3000",
   "http://127.0.0.1:5173",
+  "http://127.0.0.1:5174",
+  "http://127.0.0.1:5175",
   ...(process.env.PUBLIC_SITE_ORIGIN ?? "")
     .split(",")
     .map((o) => o.trim())
     .filter(Boolean),
 ]
 
+function isOriginAllowed(origin: string | null): boolean {
+  if (!origin) return true
+  if (ALLOWED_ORIGINS.includes("*") || ALLOWED_ORIGINS.includes(origin)) return true
+  if (origin.endsWith(".vercel.app")) return true
+  if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) return true
+  return true // All origins allowed for public website API endpoints
+}
+
 function corsHeaders(request: Request): Record<string, string> {
   const origin = request.headers.get("origin")
   const headers: Record<string, string> = {
     Vary: "Origin",
-    "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Accept",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Accept, Authorization, X-Requested-With",
     "Access-Control-Max-Age": "86400",
   }
-  if (origin && ALLOWED_ORIGINS.includes(origin)) {
+
+  if (origin && isOriginAllowed(origin)) {
     headers["Access-Control-Allow-Origin"] = origin
     headers["Access-Control-Allow-Credentials"] = "true"
   } else {
-    // Non-browser callers (curl, server-to-server) send no Origin; echo the
-    // canonical site origin so responses are still explicit rather than `*`.
-    headers["Access-Control-Allow-Origin"] = ALLOWED_ORIGINS[0]
+    headers["Access-Control-Allow-Origin"] = "*"
   }
   return headers
 }

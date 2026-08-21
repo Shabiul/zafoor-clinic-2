@@ -39,6 +39,7 @@ model User {
   specialization   String?
   consultationFee  Decimal?  @db.Decimal(10, 2)
   active           Boolean   @default(true)
+  permissions      Json?
   createdAt        DateTime  @default(now())
 
   sessions Session[]

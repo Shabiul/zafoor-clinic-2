@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
  * a boolean that flips to true once the element first enters the viewport
  * (and stays true — reveals don't replay on scroll-back-up).
  */
-export default function useInView({ threshold = 0.15, rootMargin = "0px 0px -80px 0px" } = {}) {
+export default function useInView({ threshold = 0.01, rootMargin = "50px 0px 0px 0px" } = {}) {
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
 

@@ -14,6 +14,6 @@ export default defineConfig({
   // temporarily point DATABASE_URL at DIRECT_URL's value (pgbouncer can't
   // run schema changes) - see .env.example.
   datasource: {
-    url: process.env["DATABASE_URL"],
+    url: process.env["DIRECT_URL"] || process.env["DATABASE_URL"],
   },
 });

@@ -13,9 +13,9 @@ export default async function MainLayout({ children }: { children: React.ReactNo
 
   return (
     <div className="flex flex-1 min-h-screen">
-      <SidebarNav role={user.role} />
+      <SidebarNav role={user.role} permissions={user.permissions} />
       <div className="flex flex-1 flex-col min-w-0">
-        <Header user={{ name: user.name, role: user.role }} />
+        <Header user={{ name: user.name, role: user.role, permissions: user.permissions }} />
         <main className="flex-1 min-w-0 p-4 lg:p-6">{children}</main>
       </div>
     </div>

@@ -19,10 +19,14 @@ export function LoginForm() {
     const fd = new FormData(e.currentTarget)
     startTransition(async () => {
       try {
-        await login({
+        const res = await login({
           email: String(fd.get("email") || ""),
           password: String(fd.get("password") || ""),
         })
+        if (!res.success) {
+          setError(res.error || "Invalid email or password")
+          return
+        }
         router.push("/dashboard")
         router.refresh()
       } catch (err) {

@@ -44,7 +44,7 @@ async function main() {
     update: {
       name: "Clinic Administrator",
       phone: "8940399403",
-      passwordHash: hashPassword("Admin@123456"),
+      passwordHash: hashPassword("Admin@123"),
       role: "ADMIN",
       active: true,
     },
@@ -52,18 +52,19 @@ async function main() {
       name: "Clinic Administrator",
       email: "admin@zafoorclinic.com",
       phone: "8940399403",
-      passwordHash: hashPassword("Admin@123456"),
+      passwordHash: hashPassword("Admin@123"),
       role: "ADMIN",
       active: true,
     },
   })
 
+  // Doctor
   const doctor = await prisma.user.upsert({
-    where: { email: "doctor@zafoorclinic.test" },
+    where: { email: "doctor@zafoorclinic.com" },
     update: {
       name: "Dr. Mufeeda Roohi",
       phone: "8940399403",
-      passwordHash: hashPassword("ChangeMe123!"),
+      passwordHash: hashPassword("Doctor@123"),
       role: "DOCTOR",
       specialization: "Aesthetic Physician, Diabetologist & Family Physician",
       consultationFee: 500,
@@ -71,9 +72,9 @@ async function main() {
     },
     create: {
       name: "Dr. Mufeeda Roohi",
-      email: "doctor@zafoorclinic.test",
+      email: "doctor@zafoorclinic.com",
       phone: "8940399403",
-      passwordHash: hashPassword("ChangeMe123!"),
+      passwordHash: hashPassword("Doctor@123"),
       role: "DOCTOR",
       specialization: "Aesthetic Physician, Diabetologist & Family Physician",
       consultationFee: 500,
@@ -81,20 +82,41 @@ async function main() {
     },
   })
 
-  const receptionist = await prisma.user.upsert({
-    where: { email: "reception@zafoorclinic.test" },
+  // Receptionist 1
+  await prisma.user.upsert({
+    where: { email: "reception1@zafoorclinic.com" },
     update: {
-      name: "Front Desk",
+      name: "Front Desk Receptionist (Staff 1)",
       phone: "8940399403",
-      passwordHash: hashPassword("ChangeMe123!"),
+      passwordHash: hashPassword("Reception@123"),
       role: "RECEPTIONIST",
       active: true,
     },
     create: {
-      name: "Front Desk",
-      email: "reception@zafoorclinic.test",
+      name: "Front Desk Receptionist (Staff 1)",
+      email: "reception1@zafoorclinic.com",
       phone: "8940399403",
-      passwordHash: hashPassword("ChangeMe123!"),
+      passwordHash: hashPassword("Reception@123"),
+      role: "RECEPTIONIST",
+      active: true,
+    },
+  })
+
+  // Receptionist 2
+  await prisma.user.upsert({
+    where: { email: "reception2@zafoorclinic.com" },
+    update: {
+      name: "Patient Desk Receptionist (Staff 2)",
+      phone: "8940399403",
+      passwordHash: hashPassword("Reception@123"),
+      role: "RECEPTIONIST",
+      active: true,
+    },
+    create: {
+      name: "Patient Desk Receptionist (Staff 2)",
+      email: "reception2@zafoorclinic.com",
+      phone: "8940399403",
+      passwordHash: hashPassword("Reception@123"),
       role: "RECEPTIONIST",
       active: true,
     },

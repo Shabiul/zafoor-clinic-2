@@ -2,11 +2,23 @@
  * Thin client for the CRM's public booking API.
  *
  * The base URL lives in exactly one place. Override it per-environment with
- * VITE_CRM_API_URL (see .env.example); the fallback is the CRM's local dev
- * server so a fresh clone works with no .env file at all.
+ * VITE_CRM_API_URL (see .env.example).
  */
-export const CRM_API_URL =
-  import.meta.env.VITE_CRM_API_URL || "http://localhost:3000/api/public";
+const getBaseUrl = () => {
+  if (import.meta.env.VITE_CRM_API_URL) {
+    return import.meta.env.VITE_CRM_API_URL;
+  }
+  if (
+    import.meta.env.DEV &&
+    typeof window !== "undefined" &&
+    (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+  ) {
+    return "http://localhost:3000/api/public";
+  }
+  return "";
+};
+
+export const CRM_API_URL = getBaseUrl();
 
 /** Thrown for anything the caller may want to render differently per status. */
 export class ApiError extends Error {
@@ -22,6 +34,10 @@ const NETWORK_MESSAGE =
   "We couldn't reach our booking system. Please check your connection or call the clinic on 89403 99403.";
 
 async function request(path, { method = "GET", body, signal } = {}) {
+  if (!CRM_API_URL) {
+    throw new ApiError(NETWORK_MESSAGE, { status: 0 });
+  }
+
   const options = { method, signal };
   if (body !== undefined) {
     options.headers = { "Content-Type": "application/json" };

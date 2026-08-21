@@ -3,6 +3,7 @@
 import { writeFile, mkdir } from "fs/promises"
 import path from "path"
 import { nanoid } from "nanoid"
+import { put } from "@vercel/blob"
 import { supabase, STORAGE_BUCKET } from "@/lib/supabase"
 
 const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads")
@@ -21,7 +22,26 @@ export async function uploadFile(formData: FormData) {
   const safeName = `${nanoid(12)}${ext}`
   const buffer = Buffer.from(await file.arrayBuffer())
 
-  // 1. Try uploading to Supabase Storage if configured
+  // 1. Try Vercel Blob if BLOB_READ_WRITE_TOKEN is configured
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    try {
+      const blob = await put(safeName, buffer, {
+        access: "public",
+        contentType: file.type || "application/octet-stream",
+        token: process.env.BLOB_READ_WRITE_TOKEN,
+      })
+
+      return {
+        url: blob.url,
+        name: file.name,
+        type: file.type,
+      }
+    } catch (err) {
+      console.warn("[upload] Vercel Blob upload failed, trying Supabase Storage fallback:", err)
+    }
+  }
+
+  // 2. Try uploading to Supabase Storage if configured
   if (supabase) {
     try {
       // Ensure bucket exists or upload directly
@@ -48,7 +68,7 @@ export async function uploadFile(formData: FormData) {
     }
   }
 
-  // 2. Local disk fallback
+  // 3. Local disk fallback
   await mkdir(UPLOAD_DIR, { recursive: true })
   await writeFile(path.join(UPLOAD_DIR, safeName), buffer)
 
