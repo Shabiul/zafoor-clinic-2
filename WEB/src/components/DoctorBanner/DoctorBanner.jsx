@@ -16,11 +16,17 @@ export default function DoctorBanner() {
         <img
           src={doctorBanner.logo}
           alt="Zafoor Clinic logo"
+          width="160"
+          height="160"
+          loading="lazy"
           className="full-logo"
         />
         <img
           src={doctorBanner.photo}
           alt={doctorBanner.name}
+          width="320"
+          height="320"
+          loading="lazy"
           className="doc-photo"
         />
         <div className="doc-block">
