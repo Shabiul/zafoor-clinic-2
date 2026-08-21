@@ -37,6 +37,10 @@ export default function Hero() {
             key={slide.src}
             src={slide.src}
             alt={slide.alt}
+            width="1920"
+            height="1080"
+            fetchPriority={i === 0 ? "high" : "low"}
+            decoding="async"
             className={`hero-stage-img${i === safeActiveSlide ? " active" : ""}`}
           />
         ))}

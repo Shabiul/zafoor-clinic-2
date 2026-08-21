@@ -26,6 +26,10 @@ export default function About() {
               <img
                 src="https://4pkrmvqtrlawvaa5.public.blob.vercel-storage.com/images/hero/storefront.jpg"
                 alt="Zafoor Clinic storefront and glass entrance, Dr. Mufeeda Roohi signage, St. Xavier Street, George Town, Chennai"
+                width="800"
+                height="600"
+                loading="lazy"
+                decoding="async"
               />
             </div>
           </div>

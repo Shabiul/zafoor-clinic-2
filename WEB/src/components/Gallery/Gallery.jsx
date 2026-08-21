@@ -39,7 +39,7 @@ export default function Gallery() {
               key={item.src + i}
               onClick={() => setLightboxIndex(i)}
             >
-              <img src={item.src} alt={item.alt} loading="lazy" />
+              <img src={item.src} alt={item.alt} width="600" height="600" loading="lazy" decoding="async" />
             </div>
           ))}
         </div>

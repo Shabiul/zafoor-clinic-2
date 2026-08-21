@@ -17,7 +17,16 @@ export default function ServiceImage({ src, alt, className, wrapperClassName }) 
 
   return (
     <div className={wrapperClassName}>
-      <img src={src} alt={alt} className={className} loading="lazy" onError={() => setFailed(true)} />
+      <img
+        src={src}
+        alt={alt}
+        className={className}
+        width="400"
+        height="300"
+        loading="lazy"
+        decoding="async"
+        onError={() => setFailed(true)}
+      />
     </div>
   );
 }
