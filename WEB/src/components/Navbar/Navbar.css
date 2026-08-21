@@ -1,4 +1,4 @@
-header {
+.site-header {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,7 +11,7 @@ header {
   box-shadow: 0 4px 24px rgba(60, 56, 38, 0.1);
 }
 
-.navwrap {
+.site-header .navwrap {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -20,13 +20,13 @@ header {
   margin: 0 auto;
 }
 
-.brand {
+.site-header .brand {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.brand img {
+.site-header .brand img {
   width: 44px;
   height: 44px;
   object-fit: cover;
@@ -34,7 +34,7 @@ header {
   border: 1px solid var(--color-primary-soft);
 }
 
-.brand .name {
+.site-header .brand .name {
   font-family: "Cormorant Garamond", serif;
   font-size: 1.55rem;
   font-weight: 700;
@@ -42,19 +42,19 @@ header {
   color: var(--color-ink-deep);
 }
 
-.brand .name span {
+.site-header .brand .name span {
   color: var(--color-sagegold-deep);
   font-weight: 700;
 }
 
-nav ul {
+.site-header .site-nav ul {
   display: flex;
   align-items: center;
   gap: 30px;
   list-style: none;
 }
 
-nav a {
+.site-header .site-nav a {
   font-size: 0.85rem;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -63,7 +63,7 @@ nav a {
   transition: color 0.2s;
 }
 
-nav ul li:not(.nav-cta-item) a::after {
+.site-header .site-nav ul li:not(.nav-cta-item) a::after {
   content: "";
   position: absolute;
   left: 0;
@@ -74,15 +74,15 @@ nav ul li:not(.nav-cta-item) a::after {
   transition: width 0.25s;
 }
 
-nav ul li:not(.nav-cta-item) a:hover {
+.site-header .site-nav ul li:not(.nav-cta-item) a:hover {
   color: var(--color-sagegold-deep);
 }
 
-nav ul li:not(.nav-cta-item) a:hover::after {
+.site-header .site-nav ul li:not(.nav-cta-item) a:hover::after {
   width: 100%;
 }
 
-.nav-cta {
+.site-header .nav-cta {
   display: inline-block;
   background: var(--color-primary-soft);
   border: 1px solid var(--color-primary);
@@ -95,18 +95,18 @@ nav ul li:not(.nav-cta-item) a:hover::after {
   transition: background 250ms ease, box-shadow 250ms ease, transform 250ms ease;
 }
 
-.nav-cta:hover {
+.site-header .nav-cta:hover {
   background: #ab9c6c;
   border-color: var(--color-primary);
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(185, 171, 122, 0.3);
 }
 
-.nav-cta:active {
+.site-header .nav-cta:active {
   transform: translateY(0) scale(0.99);
 }
 
-.nav-toggle {
+.site-header .nav-toggle {
   display: none;
   flex-direction: column;
   gap: 5px;
@@ -115,14 +115,14 @@ nav ul li:not(.nav-cta-item) a:hover::after {
   cursor: pointer;
 }
 
-.nav-toggle span {
+.site-header .nav-toggle span {
   width: 24px;
   height: 2px;
   background: var(--color-primary);
 }
 
 @media (max-width: 860px) {
-  nav ul {
+  .site-header .site-nav ul {
     position: fixed;
     top: 68px;
     right: -100%;
@@ -137,18 +137,18 @@ nav ul li:not(.nav-cta-item) a:hover::after {
     transition: right 0.35s ease;
     border-left: 1px solid var(--glass-border);
   }
-  nav ul.open {
+  .site-header .site-nav ul.open {
     right: 0;
   }
-  .nav-toggle {
+  .site-header .nav-toggle {
     display: flex;
   }
-  .nav-cta-item {
+  .site-header .nav-cta-item {
     margin-top: 10px;
     padding-top: 26px;
     border-top: 1px solid var(--glass-border);
   }
-  .nav-cta {
+  .site-header .nav-cta {
     display: block;
     width: 100%;
     text-align: center;

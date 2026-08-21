@@ -101,6 +101,18 @@
   margin-top: 6px;
 }
 
+.booking-privacy-link {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.booking-privacy-link:hover {
+  color: var(--ink);
+}
+
 .booking-alert {
   border-radius: var(--radius-sm);
   padding: 14px 16px;

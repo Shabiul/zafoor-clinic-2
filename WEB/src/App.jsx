@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import useLenis from "./hooks/useLenis.js";
 import Navbar from "./components/Navbar/Navbar.jsx";
 import Hero from "./components/Hero/Hero.jsx";
@@ -12,10 +13,48 @@ import Booking from "./components/Booking/Booking.jsx";
 import ContactForm from "./components/ContactForm/ContactForm.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import WhatsAppWidget from "./components/WhatsAppWidget/WhatsAppWidget.jsx";
+import PrivacyPolicy from "./components/PrivacyPolicy/PrivacyPolicy.jsx";
 import { procedureVideosSection, videoReviewsSection } from "./data/content.js";
 
-export default function App() {
+function normalizePath(p) {
+  if (!p) return "/";
+  const pathOnly = p.split("?")[0].split("#")[0];
+  const cleaned = pathOnly.replace(/\/+$/, "") || "/";
+  return cleaned;
+}
+
+export default function App({ url }) {
   useLenis();
+
+  const [currentPath, setCurrentPath] = useState(() => {
+    if (url) return normalizePath(url);
+    if (typeof window !== "undefined") return normalizePath(window.location.pathname);
+    return "/";
+  });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handlePopState = () => {
+      setCurrentPath(normalizePath(window.location.pathname));
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  const isPrivacyPage = currentPath === "/privacy-policy";
+
+  if (isPrivacyPage) {
+    return (
+      <>
+        <Navbar isSubpage />
+        <PrivacyPolicy />
+        <Footer />
+        <WhatsAppWidget />
+      </>
+    );
+  }
 
   return (
     <>

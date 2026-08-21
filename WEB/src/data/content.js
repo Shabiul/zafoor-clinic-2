@@ -679,7 +679,7 @@ export const booking = {
     submit: "Confirm Booking",
     submitting: "Booking…",
     disclaimer:
-      "By confirming, you agree to be contacted about this appointment. We never share your details.",
+      "By confirming, you agree to be contacted about this appointment. Your information is handled according to our Privacy Policy.",
   },
   confirmation: {
     title: "Your appointment is confirmed",
@@ -706,22 +706,23 @@ export const footer = {
   email: { display: "ZafoorClinic@gmail.com", href: "mailto:ZafoorClinic@gmail.com" },
   hours: "Mon–Sun · 6pm–10pm",
   columns: [
-    { heading: "Locations", links: [{ label: "George Town, Chennai", href: "#contact" }] },
+    { heading: "Locations", links: [{ label: "George Town, Chennai", href: "/#contact" }] },
     {
       heading: "Treatments",
       links: [
-        { label: "Skin, Hair & Laser", href: "#services" },
-        { label: "Diabetology", href: "#services" },
-        { label: "General Medicine", href: "#services" },
+        { label: "Skin, Hair & Laser", href: "/#services" },
+        { label: "Diabetology", href: "/#services" },
+        { label: "General Medicine", href: "/#services" },
       ],
     },
     {
       heading: "Clinic",
       links: [
-        { label: "About Zafoor Clinic", href: "#about" },
-        { label: "Dr. Mufeeda Roohi", href: "#about" },
-        { label: "Results", href: "#gallery" },
-        { label: "Gallery", href: "#gallery" },
+        { label: "About Zafoor Clinic", href: "/#about" },
+        { label: "Dr. Mufeeda Roohi", href: "/#about" },
+        { label: "Results", href: "/#gallery" },
+        { label: "Gallery", href: "/#gallery" },
+        { label: "Privacy Policy", href: "/privacy-policy/" },
       ],
     },
     {
@@ -733,8 +734,8 @@ export const footer = {
           href: "https://www.instagram.com/dr.mufeeda_roohi/",
           external: true,
         },
-        { label: "Contact", href: "#contact" },
-        { label: "FAQs", href: "#faqs" },
+        { label: "Contact", href: "/#contact" },
+        { label: "FAQs", href: "/#faqs" },
       ],
     },
   ],
