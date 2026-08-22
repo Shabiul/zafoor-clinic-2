@@ -29,7 +29,7 @@ When crawlers or HTTP clients request `https://zafoorclinic.com/`, the built Vit
 | `/` (`#home`) | Hero section with clinic identity & CTAs | Rich copy in `content.js` | ❌ Blank `#root` |
 | `#about` | Clinic philosophy & George Town location | In `About.jsx` | ❌ Blank `#root` |
 | `#doctor` | Dr. Mufeeda Roohi bio, qualifications & role | In `DoctorBanner.jsx` | ❌ Blank `#root` |
-| `#services` | 24 medical & cosmetology services across 3 departments | In `Services.jsx` | ❌ Blank `#root` |
+| `#services` | 24 medical & Skin, Hair and Laser services across 3 departments | In `Services.jsx` | ❌ Blank `#root` |
 | `#procedure` | Clinical procedure walkthrough videos | In `VideoSection.jsx` | ❌ Blank `#root` |
 | `#gallery` | Real clinic before/after treatment outcomes | In `Gallery.jsx` | ❌ Blank `#root` |
 | `#video-reviews` | Video testimonials from patients | In `VideoSection.jsx` | ❌ Blank `#root` |
@@ -76,13 +76,13 @@ When crawlers or HTTP clients request `https://zafoorclinic.com/`, the built Vit
 
 All entity data extracted strictly from verified on-page data in `src/data/content.js`:
 - **Clinic Name**: Zafoor Clinic
-- **Specialties**: Aesthetic Medicine, Diabetology, Family Medicine, Dermatology, Cosmetology, ENT, Pediatrics, Gynaecology, Eye Care
+- **Specialties**: Aesthetic Medicine, Diabetology, Family Medicine, Dermatology, Skin, Hair and Laser, ENT, Pediatrics, Gynaecology, Eye Care
 - **Lead Doctor**: Dr. Mufeeda Roohi (Founder & Chief Physician — Family Physician, Diabetologist and Aesthetic Physician)
-- **Address**: No. 69/68, St. Xavier Street, George Town, Chennai, Tamil Nadu - 600001, India (Opposite Huda Mosque, Broadway)
+- **Address**: 69/70, St. Xavier Street, George Town, Chennai, Tamil Nadu - 600001, India (Opposite Huda Mosque, Broadway)
 - **Geo Coordinates**: Latitude `13.0958`, Longitude `80.2891`
 - **Phone**: `+91 8940399403` (`89403 99403`)
 - **Email**: `ZafoorClinic@gmail.com`
-- **Hours**: Monday to Sunday: 6:00 PM – 10:00 PM (`Mo-Su 18:00-22:00`)
+- **Hours**: Monday – Saturday: 6:00 PM – 10:00 PM (Sunday: Holiday) (`Mo-Sa 18:00-22:00`)
 - **Socials**: Instagram `https://www.instagram.com/dr.mufeeda_roohi/`, WhatsApp `https://wa.me/918940399403`
 
 ---

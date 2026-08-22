@@ -502,7 +502,7 @@ export default function PrivacyPolicy() {
             <div className="privacy-contact-card glass-panel">
               <p className="privacy-contact-brand">Zafoor Clinic</p>
               <address className="privacy-address">
-                No. 69/68, St. Xavier Street<br />
+                69/70, St. Xavier Street<br />
                 George Town, Chennai – 600001<br />
                 <span className="privacy-landmark">Landmark: Opposite Huda Mosque</span>
               </address>
