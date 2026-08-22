@@ -52,7 +52,7 @@
   --blur-md: 10px;
   --blur-sm: 6px;
 
-  --nav-offset: 88px;
+  --nav-offset: 70px;
 }
 @media (max-width: 640px) {
   :root { --blur-lg: 12px; --blur-md: 10px; --blur-sm: 6px; }
