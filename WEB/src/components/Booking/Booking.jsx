@@ -31,6 +31,8 @@ const fallbackServices = servicesSection.departments.flatMap((dept) =>
 );
 
 const generateClinicSlots = (dateYmd) => {
+  const d = new Date(`${dateYmd}T12:00:00+05:30`);
+  if (d.getDay() === 0) return []; // Sunday: Holiday
   const times = [
     "18:00", "18:30", "19:00", "19:30",
     "20:00", "20:30", "21:00", "21:30",

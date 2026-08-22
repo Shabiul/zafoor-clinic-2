@@ -7,7 +7,7 @@ import "./About.css";
    surfaced here as a quiet stat row rather than invented numbers */
 const stats = [
   { value: "3", label: "Departments, One Roof" },
-  { value: "7", label: "Days A Week" },
+  { value: "6", label: "Days A Week" },
   { value: "100%", label: "Doctor-Supervised" },
 ];
 

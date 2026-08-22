@@ -73,7 +73,7 @@ export const servicesSection = {
   departments: [
     {
       "id": "cosmetology",
-      "tabLabel": "Skin, Hair & Laser",
+      "tabLabel": "Skin, Hair and Laser",
       "cards": [
         {
           "brief": "A small blood sample is drawn, processed into platelet-rich plasma, and re-injected into the treatment area to stimulate collagen and hair follicle activity. Minimal downtime, visible results over 4-6 weeks.",
@@ -593,11 +593,11 @@ export const faqSection = {
     },
     {
       "q": "Can I get my diabetes and skin treatment done in the same visit?",
-      "a": "Yes — Zafoor Clinic is built for exactly this. Dr. Mufeeda Roohi can review your diabetes management plan and address a cosmetology concern in the same evening visit."
+      "a": "Yes — Zafoor Clinic is built for exactly this. Dr. Mufeeda Roohi can review your diabetes management plan and address a Skin, Hair and Laser concern in the same evening visit."
     },
     {
       "q": "What are your clinic timings?",
-      "a": "We're open every day from 6:00 PM to 10:00 PM, at No. 69/68, St. Xavier Street, George Town, Chennai — opposite Huda Mosque."
+      "a": "We're open Monday – Saturday: 6:00 PM – 10:00 PM (Sunday: Holiday), at 69/70, St. Xavier Street, George Town, Chennai — opposite Huda Mosque."
     },
     {
       "q": "Do you offer follow-up consultations at no extra cost?",
@@ -611,14 +611,14 @@ export const contact = {
   heading: "Book Your Appointment",
   address: {
     lines: [
-      "No. 69/68, St. Xavier Street,",
+      "69/70, St. Xavier Street,",
       "George Town, Chennai – 600001",
       "Landmark: Opposite Huda Mosque",
     ],
   },
   phone: { display: "89403 99403", href: "tel:8940399403" },
   email: { display: "ZafoorClinic@gmail.com", href: "mailto:ZafoorClinic@gmail.com" },
-  timings: "Every day, 6:00 PM – 10:00 PM",
+  timings: "Monday – Saturday: 6:00 PM – 10:00 PM | Sunday: Holiday",
   whatsappHref: "https://wa.me/918940399403",
   mapSrc:
     "https://www.google.com/maps?q=No+69/68+St+Xavier+Street+George+Town+Chennai+600001&output=embed",
@@ -628,7 +628,7 @@ export const contact = {
       _subject: "New enquiry from Zafoor Clinic website",
       _captcha: "false",
     },
-    departments: ["Cosmetology", "Diabetology", "General Medicine"],
+    departments: ["Skin, Hair and Laser", "Diabetology", "General Medicine"],
     disclaimer:
       "On first submission, FormSubmit will email a one-time confirmation link to ZafoorClinic@gmail.com — click it once to activate the form permanently. After that, every message a visitor submits arrives directly in that inbox.",
   },
@@ -638,7 +638,7 @@ export const booking = {
   eyebrow: "Book Online",
   heading: "Reserve Your Consultation",
   intro:
-    "Choose your treatment, pick a time that suits you and we'll confirm your slot instantly. Consultations run every evening, 6:00 PM – 10:00 PM IST.",
+    "Choose your treatment, pick a time that suits you and we'll confirm your slot instantly. Consultations run Monday – Saturday: 6:00 PM – 10:00 PM IST (Sunday: Holiday).",
   steps: [
     { key: "service", label: "Treatment" },
     { key: "date", label: "Date" },
@@ -654,7 +654,7 @@ export const booking = {
   dateStep: {
     title: "Pick a date",
     label: "Appointment date",
-    hint: "Clinic hours are 6:00 PM – 10:00 PM IST, every day.",
+    hint: "Clinic hours are Monday – Saturday: 6:00 PM – 10:00 PM IST (Sunday: Holiday).",
   },
   slotStep: {
     title: "Choose a time",
@@ -704,13 +704,13 @@ export const footer = {
   subTagline: "A doctor-led skin, hair, diabetes & family medicine clinic in George Town, Chennai.",
   phone: { display: "+91 89403 99403", href: "tel:8940399403" },
   email: { display: "ZafoorClinic@gmail.com", href: "mailto:ZafoorClinic@gmail.com" },
-  hours: "Mon–Sun · 6pm–10pm",
+  hours: "Monday – Saturday: 6:00 PM – 10:00 PM · Sunday: Holiday",
   columns: [
     { heading: "Locations", links: [{ label: "George Town, Chennai", href: "/#contact" }] },
     {
       heading: "Treatments",
       links: [
-        { label: "Skin, Hair & Laser", href: "/#services" },
+        { label: "Skin, Hair and Laser", href: "/#services" },
         { label: "Diabetology", href: "/#services" },
         { label: "General Medicine", href: "/#services" },
       ],
@@ -747,7 +747,7 @@ export const whatsapp = {
   greeting: "Hello! 👋 Choose an option below and we will continue on WhatsApp.",
   headerTitle: "Zafoor Clinic Assistant",
   options: [
-    { label: "Cosmetology Treatments", message: "I would like to know more about Cosmetology treatments (PRP, GFC, laser, facials, hair & skin)." },
+    { label: "Skin, Hair and Laser", message: "I would like to know more about Skin, Hair and Laser treatments (PRP, GFC, laser, facials, hair & skin)." },
     { label: "Diabetology Check-up", message: "I would like to book a Diabetology check-up (vitals monitoring, neuropathy screening, diabetic foot care)." },
     { label: "General Medicine", message: "I would like a General Medicine consultation (Thyroid, Cholesterol, Pediatrics, Gynaecology, ENT, Eye Care)." },
     { label: "Book an Appointment", message: "I would like to book an appointment. Please share available slots." },

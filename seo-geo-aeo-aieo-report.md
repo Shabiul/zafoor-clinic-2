@@ -167,9 +167,9 @@ The following Schema.org types are injected as a fully connected `@graph` inside
 
 1. **`MedicalClinic`**:
    - Canonical `@id`: `https://zafoorclinic.com/#clinic`
-   - Complete address (No. 69/68, St. Xavier Street, Broadway, George Town, Chennai – 600001)
+   - Complete address (69/70, St. Xavier Street, Broadway, George Town, Chennai – 600001)
    - Geo Coordinates: `13.0958`, `80.2891`
-   - Hours: `Mo-Su 18:00-22:00`
+   - Hours: `Mo-Sa 18:00-22:00` (Sunday: Holiday)
    - Telephone: `+918940399403`
    - Area Served: Chennai, George Town, Broadway, Sowcarpet, Mannady
    - Linked to Dr. Mufeeda Roohi via `founder` and `employee`.
@@ -221,6 +221,6 @@ The following Schema.org types are injected as a fully connected `@graph` inside
    - Log in to [Bing Webmaster Tools](https://www.bing.com/webmasters).
    - Add `https://zafoorclinic.com` and submit `https://zafoorclinic.com/sitemap.xml`.
 3. **Google Business Profile (Crucial for Local Map Pack)**:
-   - Ensure the Google Business Profile matches the exact name (**Zafoor Clinic**), address (**No. 69/68, St. Xavier Street, George Town, Chennai – 600001**), phone (**89403 99403**), and categories (**Skin Care Clinic, Diabetes Clinic, Family Physician**).
+   - Ensure the Google Business Profile matches the exact name (**Zafoor Clinic**), address (**69/70, St. Xavier Street, George Town, Chennai – 600001**), phone (**89403 99403**), and categories (**Skin Care Clinic, Diabetes Clinic, Family Physician**).
 4. **Local Citations & Reviews**:
    - Encourage satisfied clinic patients to post Google reviews mentioning specific treatments (e.g. "PRP for hair fall in Chennai", "Diabetic foot care in George Town").

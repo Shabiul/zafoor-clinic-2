@@ -20,7 +20,7 @@ const privacySchema = {
       "email": "ZafoorClinic@gmail.com",
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "No. 69/68, St. Xavier Street, Broadway (Opposite Huda Mosque)",
+        "streetAddress": "69/70, St. Xavier Street, Broadway (Opposite Huda Mosque)",
         "addressLocality": "George Town",
         "addressRegion": "Tamil Nadu",
         "postalCode": "600001",
@@ -34,7 +34,7 @@ const privacySchema = {
       "openingHoursSpecification": [
         {
           "@type": "OpeningHoursSpecification",
-          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
           "opens": "18:00",
           "closes": "22:00"
         }
