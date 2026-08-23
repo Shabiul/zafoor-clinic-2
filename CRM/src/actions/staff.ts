@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { hashPassword, requireRole } from "@/lib/auth"
 import { serializeDecimal } from "@/lib/serialize"
-import type { StaffRole } from "@/generated/prisma/client"
+import type { StaffRole } from "@/types/database"
 
 export type CreateStaffInput = {
   name: string
@@ -271,7 +271,7 @@ export async function syncDefaultStaffAccounts() {
     },
   ]
 
-  const results = []
+  const results: any[] = []
   for (const acc of defaultAccounts) {
     const user = await prisma.user.upsert({
       where: { email: acc.email },

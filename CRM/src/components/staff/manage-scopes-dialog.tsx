@@ -27,7 +27,7 @@ import {
   getEffectivePermissions,
   type StaffPermissions,
 } from "@/lib/permissions"
-import type { StaffRole } from "@/generated/prisma/client"
+import type { StaffRole } from "@/types/database"
 
 type StaffMember = {
   id: string

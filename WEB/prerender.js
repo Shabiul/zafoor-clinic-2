@@ -20,8 +20,8 @@ const privacySchema = {
       "email": "ZafoorClinic@gmail.com",
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "69/70, St. Xavier Street, Broadway (Opposite Huda Mosque)",
-        "addressLocality": "George Town",
+        "streetAddress": "No 69/70, St. Xavier Street, Broadway, Sevenwells (Opposite Huda Mosque)",
+        "addressLocality": "Broadway, Sevenwells, Chennai",
         "addressRegion": "Tamil Nadu",
         "postalCode": "600001",
         "addressCountry": "IN"
