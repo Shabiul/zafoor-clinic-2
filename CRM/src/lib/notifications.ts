@@ -31,7 +31,7 @@ export interface AppointmentNotificationData {
 
 const CLINIC_NAME = "Zafoor Clinic"
 const CLINIC_PHONE = "8940399403"
-const CLINIC_ADDRESS = "No. 69/70, St. Xavier Street, Broadway, George Town, Chennai - 600001"
+const CLINIC_ADDRESS = "No 69/70, St. Xavier Street, Broadway, Sevenwells, Chennai - 600001 (Landmark: Opposite Huda Mosque)"
 
 export class NotificationService {
   /**
@@ -94,7 +94,7 @@ export class NotificationService {
       `Location: ${data.clinicAddress || CLINIC_ADDRESS}\n` +
       `Ph: ${data.clinicPhone || CLINIC_PHONE}`
 
-    const results = []
+    const results: any[] = []
 
     if (data.patientPhone) {
       results.push(

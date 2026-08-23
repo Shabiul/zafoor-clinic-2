@@ -1,4 +1,4 @@
-import type { StaffRole } from "@/generated/prisma/client"
+import type { StaffRole } from "@/types/database"
 
 export type TabItemDefinition = {
   id: string

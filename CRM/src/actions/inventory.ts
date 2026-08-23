@@ -610,7 +610,7 @@ export async function dispensePrescriptionItems(params: {
   const user = await getCurrentUser()
 
   const results = await prisma.$transaction(async (tx) => {
-    const dispensedList = []
+    const dispensedList: any[] = []
 
     for (const item of params.items) {
       if (!item.quantity || item.quantity <= 0) continue

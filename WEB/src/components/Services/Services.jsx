@@ -15,39 +15,40 @@ export default function Services() {
 
   return (
     <section ref={ref} className={`section section-alt reveal${inView ? " in-view" : ""}`} id="services">
-      <div className="container section-head-row">
-        <div>
+      <div className="container">
+        <div className="section-head">
           <p className="eyebrow">{servicesSection.eyebrow}</p>
           <h2>{servicesSection.heading}</h2>
           <div className="divider"></div>
         </div>
-        <div className="lang-toggle">
-          {servicesSection.languages.map((l) => (
-            <button
-              key={l.code}
-              className={`lang-opt${lang === l.code ? " active" : ""}`}
-              onClick={() => setLang(l.code)}
-            >
-              {l.label}
-            </button>
-          ))}
-        </div>
-      </div>
-      <div className="container">
-        <div className="dept-tabs">
-          {servicesSection.departments.map((dept) => (
-            <button
-              key={dept.id}
-              className={`dept-tab-btn${activeDept === dept.id ? " active" : ""}`}
-              onClick={() => setActiveDept(dept.id)}
-            >
-              {dept.tabLabel}
-            </button>
-          ))}
+
+        <div className="services-controls">
+          <div className="lang-toggle">
+            {servicesSection.languages.map((l) => (
+              <button
+                key={l.code}
+                className={`lang-opt${lang === l.code ? " active" : ""}`}
+                onClick={() => setLang(l.code)}
+              >
+                {l.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="dept-tabs">
+            {servicesSection.departments.map((dept) => (
+              <button
+                key={dept.id}
+                className={`dept-tab-btn${activeDept === dept.id ? " active" : ""}`}
+                onClick={() => setActiveDept(dept.id)}
+              >
+                {dept.tabLabel}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="dept-panel active">
-          <h3 className="dept-heading">{activeDeptData.tabLabel}</h3>
           <div className="service-grid">
             {activeDeptData.cards.map((card, i) => {
               const title = lang === "ta" ? card.taTitle : card.enTitle;

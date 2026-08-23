@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react"
 import { toast } from "sonner"
-import { UserPlus, Stethoscope, Shield, UserCheck, Receipt } from "lucide-react"
+import { UserPlus, Stethoscope, Shield, UserCheck, Receipt, Eye, EyeOff } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { createStaffMember } from "@/actions/staff"
-import type { StaffRole } from "@/generated/prisma/client"
+import type { StaffRole } from "@/types/database"
 
 const roleOptions: { value: StaffRole; label: string; icon: typeof UserCheck; desc: string }[] = [
   { value: "RECEPTIONIST", label: "Receptionist (Staff)", icon: UserCheck, desc: "Selective access: Book appointments, check-in tokens, medicine dispensing/returns, payments" },
@@ -26,6 +26,7 @@ const roleOptions: { value: StaffRole; label: string; icon: typeof UserCheck; de
 export function AddStaffDialog() {
   const [open, setOpen] = useState(false)
   const [role, setRole] = useState<StaffRole>("RECEPTIONIST")
+  const [showPassword, setShowPassword] = useState(false)
   const [pending, startTransition] = useTransition()
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -108,7 +109,29 @@ export function AddStaffDialog() {
               <Label className="text-xs font-medium" htmlFor="staff-password">
                 Temporary Password <span className="text-destructive">*</span>
               </Label>
-              <Input id="staff-password" name="password" type="password" placeholder="Min. 6 characters" required />
+              <div className="relative">
+                <Input
+                  id="staff-password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Min. 6 characters"
+                  required
+                  className="pr-9"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-0.5 rounded focus:outline-none"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  tabIndex={-1}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" aria-hidden="true" />
+                  ) : (
+                    <Eye className="h-4 w-4" aria-hidden="true" />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
 

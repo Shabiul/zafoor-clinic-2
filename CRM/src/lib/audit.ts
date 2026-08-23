@@ -1,6 +1,6 @@
-import { prisma } from "@/lib/prisma"
+import { getSupabase } from "@/lib/supabase"
 import { getCurrentUserOrNull } from "@/lib/auth"
-import type { Prisma } from "@/generated/prisma/client"
+import { nanoid } from "nanoid"
 
 export type AuditAction =
   | "PATIENT_CREATED"
@@ -42,12 +42,12 @@ interface LogAuditParams {
   userName?: string
   userRole?: string
   ipAddress?: string
-  tx?: Prisma.TransactionClient
+  tx?: any
 }
 
 export async function logAudit(params: LogAuditParams) {
   try {
-    const client = params.tx || prisma
+    const supabase = getSupabase()
     let userId = params.userId
     let userName = params.userName
     let userRole = params.userRole
@@ -61,18 +61,24 @@ export async function logAudit(params: LogAuditParams) {
       }
     }
 
-    return await client.auditLog.create({
-      data: {
-        action: params.action,
-        entityType: params.entityType,
-        entityId: params.entityId,
-        metadata: (params.metadata as Prisma.InputJsonValue) ?? undefined,
-        userId: userId || null,
-        userName: userName || "System",
-        userRole: userRole || "SYSTEM",
-        ipAddress: params.ipAddress || null,
-      },
-    })
+    const { data, error } = await supabase.from("AuditLog").insert({
+      id: "aud_" + nanoid(20),
+      action: params.action,
+      entityType: params.entityType,
+      entityId: params.entityId || null,
+      metadata: params.metadata || null,
+      userId: userId || null,
+      userName: userName || "System",
+      userRole: userRole || "SYSTEM",
+      ipAddress: params.ipAddress || null,
+    }).select().single()
+
+    if (error) {
+      console.error("[AuditLog] Supabase insert error:", error)
+      return null
+    }
+
+    return data
   } catch (err) {
     console.error("[AuditLog] Failed to record audit entry:", err)
     return null

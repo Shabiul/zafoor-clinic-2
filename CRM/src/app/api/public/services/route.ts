@@ -4,6 +4,37 @@ import { json, preflight } from "../_lib"
 export const dynamic = "force-dynamic"
 
 /** GET /api/public/services — active services for the public website. */
+function getDepartmentId(name: string): string {
+  const s = name.toLowerCase()
+  if (s.includes("skin, diabetes") || s.includes("combined")) return "all-departments"
+  if (
+    s.includes("skin") ||
+    s.includes("hair") ||
+    s.includes("acne") ||
+    s.includes("laser") ||
+    s.includes("prp") ||
+    s.includes("gfc") ||
+    s.includes("peel") ||
+    s.includes("facial") ||
+    s.includes("derma") ||
+    s.includes("cosmetic") ||
+    s.includes("aesthetic")
+  ) {
+    return "skin-hair-laser"
+  }
+  if (
+    s.includes("diabet") ||
+    s.includes("sugar") ||
+    s.includes("glucose") ||
+    s.includes("insulin") ||
+    s.includes("neuropathy") ||
+    s.includes("foot")
+  ) {
+    return "diabetology"
+  }
+  return "general"
+}
+
 export async function GET(request: Request) {
   const services = await prisma.service.findMany({
     where: { active: true },
@@ -26,6 +57,7 @@ export async function GET(request: Request) {
       description: s.description ?? s.shortDescription ?? null,
       price: s.price == null ? null : Number(s.price),
       durationMinutes: s.durationMinutes,
+      departmentId: getDepartmentId(s.name),
     }))
   )
 }

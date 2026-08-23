@@ -142,7 +142,7 @@ export async function registerPatientWithBooking(params: {
       },
     })
 
-    let appointment = null
+    let appointment: any = null
     if (params.appointment) {
       // Check slot conflict inside transaction
       const conflict = await tx.appointment.findFirst({

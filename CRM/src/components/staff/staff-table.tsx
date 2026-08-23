@@ -33,7 +33,7 @@ import { ManageScopesDialog } from "@/components/staff/manage-scopes-dialog"
 import { toggleStaffStatus, syncDefaultStaffAccounts } from "@/actions/staff"
 import { getEffectivePermissions, ALL_AVAILABLE_TABS } from "@/lib/permissions"
 import { initials } from "@/lib/format"
-import type { StaffRole } from "@/generated/prisma/client"
+import type { StaffRole } from "@/types/database"
 
 type StaffMember = {
   id: string

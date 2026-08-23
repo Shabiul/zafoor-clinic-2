@@ -30,7 +30,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { hasTabAccess } from "@/lib/permissions"
-import type { StaffRole } from "@/generated/prisma/client"
+import type { StaffRole } from "@/types/database"
 
 interface NavItem {
   href: string

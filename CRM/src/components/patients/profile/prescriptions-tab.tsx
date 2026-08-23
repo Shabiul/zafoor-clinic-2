@@ -60,8 +60,8 @@ export function PrescriptionsTab({
             <div>
               <div class="clinic-name">ZAFOOR CLINIC</div>
               <div class="clinic-info">
-                No. 69/70, St. Xavier Street, Broadway, George Town, Chennai - 600001<br/>
-                Phone: +91 89403 99403 | Email: contact@zafoorclinic.com
+                No 69/70, St. Xavier Street, Broadway, Sevenwells, Chennai - 600001 (Landmark: Opposite Huda Mosque)<br/>
+                Phone: +91 89403 99403 | Email: ZafoorClinic@gmail.com
               </div>
             </div>
             <div style="text-align: right;">

@@ -3,9 +3,9 @@
 // Image/video paths reference /public directly (see README for the asset-repair notes).
 
 export const siteMeta = {
-  title: "Zafoor Clinic | Skin, Hair, Diabetes & Family Medicine — George Town, Chennai",
+  title: "Zafoor Clinic | Skin, Hair & Laser, Diabetes & Family Medicine — Broadway, Sevenwells, Chennai",
   description:
-    "Zafoor Clinic, George Town Chennai — skin, hair & laser treatments (PRP, GFC, chemical peels, laser hair reduction), diabetes & hypertension management, and family medicine (thyroid, cholesterol, pediatrics, gynaecology, ENT, eye care) with Dr. Mufeeda Roohi. Opposite Huda Mosque, Broadway. Call 8940399403.",
+    "Zafoor Clinic, Broadway, Sevenwells, Chennai — Skin, Hair & Laser treatments (PRP, GFC, chemical peels, laser treatments), diabetes & hypertension management, and family medicine with Dr. Mufeeda Roohi. Landmark: Opposite Huda Mosque. Call 8940399403.",
 };
 export const nav = {
   brand: { name: "ZAFOOR", accent: "CLINIC" },
@@ -23,10 +23,10 @@ export const nav = {
 };
 
 export const hero = {
-  eyebrow: "George Town · Chennai",
+  eyebrow: "Broadway, Sevenwells · Chennai",
   headingLines: ["Care, crafted", "carefully."],
   lead:
-    "A doctor-led skin, hair, diabetes and family medicine clinic in George Town, Chennai — delivering honest, results-driven care in a calm, luxurious setting.",
+    "A doctor-led skin, hair, laser, diabetes and family medicine clinic in Broadway, Sevenwells, Chennai — delivering honest, results-driven care in a calm, luxurious setting.",
   slides: [
     {
       src: "https://4pkrmvqtrlawvaa5.public.blob.vercel-storage.com/images/hero/clinic-signage-1.jpg",
@@ -53,14 +53,14 @@ export const doctorBanner = {
   photo: "https://4pkrmvqtrlawvaa5.public.blob.vercel-storage.com/logo/dr-mufeeda-roohi.jpg",
   eyebrow: "Meet Your Doctor",
   name: "Dr. Mufeeda Roohi",
-  credentials: "Family Physician, Diabetologist and Aesthetic Physician",
+  credentials: "Family Physician, Diabetologist and Aesthetic Physician (Skin, Hair & Laser)",
   role: "Founder & Chief Physician",
 };
 export const about = {
   eyebrow: "Who We Are",
   heading: "A Clinic Built Around You",
   text:
-    "Located at St. Xavier Street, Broadway, opposite Huda Mosque, Zafoor Clinic is a multi-specialty practice offering skin & hair care, diabetes management and general medicine under one roof. Every treatment — from a PRP session to a routine blood pressure check — is carried out under doctor supervision, in a calm and hygienic setting, during accessible evening hours.",
+    "Located at No 69/70, St. Xavier Street, Broadway, Sevenwells, Chennai - 600001 (Landmark: Opposite Huda Mosque), Zafoor Clinic is a multi-specialty practice offering skin, hair and laser care, diabetes management and general medicine under one roof. Every treatment — from a PRP session to a routine blood pressure check — is carried out under doctor supervision, in a calm and hygienic setting, during accessible evening hours.",
 };
 
 export const servicesSection = {
@@ -72,7 +72,7 @@ export const servicesSection = {
   ],
   departments: [
     {
-      "id": "cosmetology",
+      "id": "skin-hair-laser",
       "tabLabel": "Skin, Hair and Laser",
       "cards": [
         {
@@ -597,7 +597,7 @@ export const faqSection = {
     },
     {
       "q": "What are your clinic timings?",
-      "a": "We're open Monday – Saturday: 6:00 PM – 10:00 PM (Sunday: Holiday), at 69/70, St. Xavier Street, George Town, Chennai — opposite Huda Mosque."
+      "a": "We're open Monday – Saturday: 6:00 PM – 10:00 PM (Sunday: Holiday), at No 69/70, St. Xavier Street, Broadway, Sevenwells, Chennai - 600001 (Landmark: Opposite Huda Mosque)."
     },
     {
       "q": "Do you offer follow-up consultations at no extra cost?",
@@ -611,8 +611,8 @@ export const contact = {
   heading: "Book Your Appointment",
   address: {
     lines: [
-      "69/70, St. Xavier Street,",
-      "George Town, Chennai – 600001",
+      "No 69/70, St. Xavier Street,",
+      "Broadway, Sevenwells, Chennai - 600001.",
       "Landmark: Opposite Huda Mosque",
     ],
   },
@@ -621,7 +621,7 @@ export const contact = {
   timings: "Monday – Saturday: 6:00 PM – 10:00 PM | Sunday: Holiday",
   whatsappHref: "https://wa.me/918940399403",
   mapSrc:
-    "https://www.google.com/maps?q=No+69/68+St+Xavier+Street+George+Town+Chennai+600001&output=embed",
+    "https://www.google.com/maps?q=No+69/70+St+Xavier+Street+Broadway+Sevenwells+Chennai+600001&output=embed",
   form: {
     action: "https://formsubmit.co/ZafoorClinic@gmail.com",
     hiddenFields: {
