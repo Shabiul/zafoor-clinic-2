@@ -50,10 +50,10 @@ export async function getInventoryItems(params?: { query?: string; category?: st
 
   const formatted = items.map((item) => ({
     ...item,
-    lowStockThresholdPercent: Number(item.lowStockThresholdPercent),
+    lowStockThresholdPercent: Number(item.lowStockThresholdPercent || 20),
     unitPrice: item.unitPrice ? Number(item.unitPrice) : null,
     isLowStock: item.currentStock <= item.lowStockThresholdQty,
-    activeAlert: item.alerts[0] || null,
+    activeAlert: Array.isArray(item.alerts) && item.alerts.length > 0 ? item.alerts[0] : null,
   }))
 
   if (params?.lowStockOnly) {
@@ -494,11 +494,13 @@ export async function getInventoryAlerts(params?: { status?: "ACTIVE" | "ACKNOWL
 
   return alerts.map((a) => ({
     ...a,
-    item: {
-      ...a.item,
-      lowStockThresholdPercent: Number(a.item.lowStockThresholdPercent),
-      unitPrice: a.item.unitPrice ? Number(a.item.unitPrice) : null,
-    },
+    item: a.item
+      ? {
+          ...a.item,
+          lowStockThresholdPercent: Number(a.item.lowStockThresholdPercent || 20),
+          unitPrice: a.item.unitPrice ? Number(a.item.unitPrice) : null,
+        }
+      : ({} as any),
   }))
 }
 
@@ -585,11 +587,13 @@ export async function getInventoryTransactions(params?: {
   return {
     transactions: transactions.map((t) => ({
       ...t,
-      item: {
-        ...t.item,
-        lowStockThresholdPercent: Number(t.item.lowStockThresholdPercent),
-        unitPrice: t.item.unitPrice ? Number(t.item.unitPrice) : null,
-      },
+      item: t.item
+        ? {
+            ...t.item,
+            lowStockThresholdPercent: Number(t.item.lowStockThresholdPercent || 20),
+            unitPrice: t.item.unitPrice ? Number(t.item.unitPrice) : null,
+          }
+        : ({} as any),
       performedBy: serializeDecimal(t.performedBy, ["consultationFee"]),
     })),
     total,
