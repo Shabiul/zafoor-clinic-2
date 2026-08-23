@@ -7,21 +7,36 @@ const RELATION_MAP: Record<string, Record<string, string>> = {
     doctor: "doctor:User!Appointment_doctorId_fkey(*)",
     createdBy: "createdBy:User!Appointment_createdById_fkey(*)",
     patient: "patient:Patient(*)",
+    service: "service:Service(*)",
   },
   Patient: {
     registeredBy: "registeredBy:User!Patient_registeredById_fkey(*)",
     appointments: "appointments:Appointment(*)",
     bills: "bills:Bill(*)",
     tags: "tags:PatientTag(*, tag:Tag(*))",
-    allergies: "allergies:Allergy(*)",
     medicalAlerts: "medicalAlerts:MedicalAlert(*)",
+    allergies: "allergies:Allergy(*)",
+    chronicDiseases: "chronicDiseases:ChronicDisease(*)",
+    medicalHistory: "medicalHistory:MedicalHistory(*)",
+    familyHistory: "familyHistory:FamilyHistoryEntry(*)",
+    surgicalHistory: "surgicalHistory:SurgicalHistory(*)",
+    currentMedications: "currentMedications:CurrentMedication(*)",
+    clinicalReports: "clinicalReports:ClinicalReport(*)",
+    referralNotes: "referralNotes:ReferralNote(*)",
+    certificates: "certificates:Certificate(*)",
+    feedback: "feedback:Feedback(*)",
+    messages: "messages:Message(*)",
+    refunds: "refunds:Refund(*)",
+    advances: "advances:PatientAdvance(*)",
+    waitingListEntries: "waitingListEntries:WaitingListEntry(*)",
     prescriptions: "prescriptions:Prescription(*, items:PrescriptionItem(*))",
     encounters: "encounters:Encounter(*)",
     documents: "documents:Document(*)",
     notes: "notes:PatientNote(*)",
     followUps: "followUps:FollowUp(*)",
     emergencyContacts: "emergencyContacts:EmergencyContact(*)",
-    familyMembers: "familyMembers:FamilyMember(*)",
+    familyMembers: "familyMembers:FamilyMember!FamilyMember_patientId_fkey(*)",
+    relatedToFamilyOf: "relatedToFamilyOf:FamilyMember!FamilyMember_relatedPatientId_fkey(*)",
     insurances: "insurances:Insurance(*)",
     communicationPreference: "communicationPreference:CommunicationPreference(*)",
   },
@@ -35,8 +50,13 @@ const RELATION_MAP: Record<string, Record<string, string>> = {
   },
   Bill: {
     patient: "patient:Patient(*)",
+    appointment: "appointment:Appointment(*)",
+    insurance: "insurance:Insurance(*)",
+    service: "service:Service(*)",
     items: "items:BillItem(*)",
     payments: "payments:Payment(*)",
+    refunds: "refunds:Refund(*)",
+    advanceAdjustments: "advanceAdjustments:AdvanceAdjustment(*)",
   },
   BillItem: {
     bill: "bill:Bill(*)",
@@ -46,6 +66,7 @@ const RELATION_MAP: Record<string, Record<string, string>> = {
     bill: "bill:Bill(*, items:BillItem(*))",
     patient: "patient:Patient(*)",
     receivedBy: "receivedBy:User!Payment_receivedById_fkey(*)",
+    cashSession: "cashSession:CashSession(*)",
   },
   Session: {
     user: "user:User(*)",
@@ -111,8 +132,40 @@ const RELATION_MAP: Record<string, Record<string, string>> = {
     patient: "patient:Patient(*)",
     item: "item:InventoryItem(*)",
   },
-  AuditLog: {
-    user: "user:User(*)",
+  InventoryAlert: {
+    item: "item:InventoryItem(*)",
+  },
+  DoctorLeave: {
+    doctor: "doctor:User!DoctorLeave_doctorId_fkey(*)",
+  },
+  WaitingListEntry: {
+    doctor: "doctor:User!WaitingListEntry_doctorId_fkey(*)",
+    patient: "patient:Patient(*)",
+  },
+  Refund: {
+    processedBy: "processedBy:User!Refund_processedById_fkey(*)",
+    bill: "bill:Bill(*)",
+    patient: "patient:Patient(*)",
+  },
+  PatientAdvance: {
+    receivedBy: "receivedBy:User!PatientAdvance_receivedById_fkey(*)",
+    patient: "patient:Patient(*)",
+  },
+  AdvanceAdjustment: {
+    bill: "bill:Bill(*)",
+    advance: "advance:PatientAdvance(*)",
+  },
+  Review: {
+    service: "service:Service(*)",
+  },
+  DoctorTemplate: {
+    owner: "owner:User!DoctorTemplate_ownerId_fkey(*)",
+  },
+  DigitalSignature: {
+    user: "user:User!DigitalSignature_userId_fkey(*)",
+  },
+  Feedback: {
+    patient: "patient:Patient(*)",
   },
   WebsiteService: {
     service: "service:Service(*)",
@@ -386,6 +439,97 @@ function createModelDelegate(tableName: string) {
         return 0
       }
       return count || 0
+    },
+
+    async aggregate(args?: {
+      where?: Record<string, any>
+      _sum?: Record<string, boolean>
+      _avg?: Record<string, boolean>
+      _min?: Record<string, boolean>
+      _max?: Record<string, boolean>
+      _count?: Record<string, boolean> | boolean
+    }) {
+      const items = await this.findMany({ where: args?.where })
+      const result: Record<string, any> = {}
+
+      if (args?._sum) {
+        result._sum = {}
+        for (const key of Object.keys(args._sum)) {
+          result._sum[key] = items.reduce((sum: number, item: any) => sum + (Number(item[key]) || 0), 0)
+        }
+      }
+
+      if (args?._avg) {
+        result._avg = {}
+        for (const key of Object.keys(args._avg)) {
+          const total = items.reduce((sum: number, item: any) => sum + (Number(item[key]) || 0), 0)
+          result._avg[key] = items.length > 0 ? total / items.length : 0
+        }
+      }
+
+      if (args?._min) {
+        result._min = {}
+        for (const key of Object.keys(args._min)) {
+          const vals = items.map((i: any) => Number(i[key])).filter((v: number) => !isNaN(v))
+          result._min[key] = vals.length > 0 ? Math.min(...vals) : null
+        }
+      }
+
+      if (args?._max) {
+        result._max = {}
+        for (const key of Object.keys(args._max)) {
+          const vals = items.map((i: any) => Number(i[key])).filter((v: number) => !isNaN(v))
+          result._max[key] = vals.length > 0 ? Math.max(...vals) : null
+        }
+      }
+
+      if (args?._count) {
+        if (typeof args._count === "boolean") {
+          result._count = items.length
+        } else {
+          result._count = {}
+          for (const key of Object.keys(args._count)) {
+            result._count[key] = items.filter((i: any) => i[key] != null).length
+          }
+        }
+      }
+
+      return result
+    },
+
+    async groupBy(args: {
+      by: string[]
+      where?: Record<string, any>
+      _sum?: Record<string, boolean>
+      _count?: Record<string, boolean> | boolean
+    }) {
+      const items = await this.findMany({ where: args?.where })
+      const groups = new Map<string, any[]>()
+
+      for (const item of items) {
+        const groupKey = args.by.map((k) => String(item[k])).join("___")
+        if (!groups.has(groupKey)) groups.set(groupKey, [])
+        groups.get(groupKey)!.push(item)
+      }
+
+      const results: any[] = []
+      for (const [, groupItems] of groups.entries()) {
+        const row: Record<string, any> = {}
+        for (const key of args.by) {
+          row[key] = groupItems[0][key]
+        }
+        if (args._sum) {
+          row._sum = {}
+          for (const key of Object.keys(args._sum)) {
+            row._sum[key] = groupItems.reduce((s, i) => s + (Number(i[key]) || 0), 0)
+          }
+        }
+        if (args._count) {
+          row._count = groupItems.length
+        }
+        results.push(row)
+      }
+      return results
     },
   }
 }

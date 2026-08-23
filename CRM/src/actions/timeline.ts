@@ -64,10 +64,10 @@ export async function getPatientTimeline(patientId: string): Promise<TimelineEve
     events.push({
       id: `apt-${a.id}`,
       type: "APPOINTMENT",
-      date: a.scheduledAt,
-      title: `${appointmentTypeLabels[a.type]} with Dr. ${a.doctor.name}`,
+      date: new Date(a.scheduledAt),
+      title: `${appointmentTypeLabels[a.type] || "Appointment"} with Dr. ${a.doctor?.name || "Mufeeda Roohi"}`,
       description: a.reason ?? undefined,
-      badge: appointmentStatusLabels[a.status],
+      badge: appointmentStatusLabels[a.status] || a.status,
     })
   }
 
@@ -75,9 +75,9 @@ export async function getPatientTimeline(patientId: string): Promise<TimelineEve
     events.push({
       id: `rx-${p.id}`,
       type: "PRESCRIPTION",
-      date: p.issuedAt,
-      title: `Prescription by Dr. ${p.doctor.name}`,
-      description: p.items.map((i) => i.medicineName).join(", ") || p.diagnosis || undefined,
+      date: new Date(p.issuedAt),
+      title: `Prescription by Dr. ${p.doctor?.name || "Mufeeda Roohi"}`,
+      description: (p.items || []).map((i: any) => i.medicineName).join(", ") || p.diagnosis || undefined,
     })
   }
 
@@ -85,7 +85,7 @@ export async function getPatientTimeline(patientId: string): Promise<TimelineEve
     events.push({
       id: `bill-${b.id}`,
       type: "BILL",
-      date: b.issuedAt,
+      date: new Date(b.issuedAt),
       title: `Bill ${b.billNumber} — ${formatCurrency(Number(b.netAmount))}`,
       badge: b.status,
     })
@@ -95,7 +95,7 @@ export async function getPatientTimeline(patientId: string): Promise<TimelineEve
     events.push({
       id: `pay-${p.id}`,
       type: "PAYMENT",
-      date: p.paidAt,
+      date: new Date(p.paidAt),
       title: `Payment of ${formatCurrency(Number(p.amount))} via ${p.method}`,
       badge: p.status,
     })
@@ -105,7 +105,7 @@ export async function getPatientTimeline(patientId: string): Promise<TimelineEve
     events.push({
       id: `doc-${r.id}`,
       type: "REPORT",
-      date: r.uploadedAt,
+      date: new Date(r.uploadedAt),
       title: r.title,
       badge: r.category,
     })
@@ -115,8 +115,8 @@ export async function getPatientTimeline(patientId: string): Promise<TimelineEve
     events.push({
       id: `msg-${m.id}`,
       type: "MESSAGE",
-      date: m.sentAt,
-      title: `${commChannelLabels[m.channel]} ${m.direction === "OUTBOUND" ? "sent" : "received"}`,
+      date: new Date(m.sentAt),
+      title: `${commChannelLabels[m.channel] || m.channel} ${m.direction === "OUTBOUND" ? "sent" : "received"}`,
       description: m.body,
       badge: m.status,
     })
@@ -126,7 +126,7 @@ export async function getPatientTimeline(patientId: string): Promise<TimelineEve
     events.push({
       id: `note-${n.id}`,
       type: "NOTE",
-      date: n.createdAt,
+      date: new Date(n.createdAt),
       title: `Note by ${n.author?.name ?? "Staff"}`,
       description: n.body,
       badge: n.category,
@@ -137,20 +137,20 @@ export async function getPatientTimeline(patientId: string): Promise<TimelineEve
     events.push({
       id: `fb-${f.id}`,
       type: "FEEDBACK",
-      date: f.createdAt,
+      date: new Date(f.createdAt),
       title: `Feedback — ${f.rating}/5`,
       description: f.comment ?? undefined,
     })
   }
 
   for (const e of encounters) {
-    const primaryDx = e.diagnoses.find((d) => d.type === "PRIMARY") ?? e.diagnoses[0]
+    const primaryDx = (e.diagnoses || []).find((d: any) => d.type === "PRIMARY") ?? e.diagnoses?.[0]
     events.push({
       id: `enc-${e.id}`,
       type: "ENCOUNTER",
-      date: e.signedAt ?? e.encounterDate,
-      title: `Consultation with Dr. ${e.doctor.name}`,
-      description: primaryDx?.description ?? (e.chiefComplaints.join(", ") || undefined),
+      date: new Date(e.signedAt ?? e.encounterDate),
+      title: `Consultation with Dr. ${e.doctor?.name || "Mufeeda Roohi"}`,
+      description: primaryDx?.description ?? (e.chiefComplaints?.join(", ") || undefined),
       badge: "Signed",
     })
   }
@@ -159,7 +159,7 @@ export async function getPatientTimeline(patientId: string): Promise<TimelineEve
     events.push({
       id: `crep-${r.id}`,
       type: "CLINICAL_REPORT",
-      date: r.reportDate,
+      date: new Date(r.reportDate),
       title: `${r.type === "LAB" ? "Lab Report" : "Radiology Report"} — ${r.title}`,
       description: r.impression ?? r.findings ?? undefined,
       badge: r.status,
@@ -170,7 +170,7 @@ export async function getPatientTimeline(patientId: string): Promise<TimelineEve
     events.push({
       id: `ref-${r.id}`,
       type: "REFERRAL",
-      date: r.createdAt,
+      date: new Date(r.createdAt),
       title: `Referred to ${r.toDoctor}${r.toSpecialty ? ` (${r.toSpecialty})` : ""}`,
       description: r.reason,
       badge: r.urgency,
@@ -181,11 +181,11 @@ export async function getPatientTimeline(patientId: string): Promise<TimelineEve
     events.push({
       id: `cert-${c.id}`,
       type: "CERTIFICATE",
-      date: c.createdAt,
-      title: `${c.title} issued by Dr. ${c.doctor.name}`,
+      date: new Date(c.createdAt),
+      title: `${c.title} issued by Dr. ${c.doctor?.name || "Mufeeda Roohi"}`,
       badge: c.signedAt ? "Signed" : "Draft",
     })
   }
 
-  return events.sort((a, b) => b.date.getTime() - a.date.getTime())
+  return events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 }

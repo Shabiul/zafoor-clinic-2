@@ -385,7 +385,7 @@ export async function getPatientById(patientId: string) {
   if (!patient) return null
   return {
     ...patient,
-    insurances: patient.insurances.map((i) => serializeDecimal(i, ["coverageAmount"])),
+    insurances: (patient.insurances || []).map((i) => serializeDecimal(i, ["coverageAmount"])),
     registeredBy: patient.registeredBy ? serializeDecimal(patient.registeredBy, ["consultationFee"]) : null,
   }
 }
