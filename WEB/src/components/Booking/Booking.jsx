@@ -30,6 +30,47 @@ const fallbackServices = servicesSection.departments.flatMap((dept) =>
   }))
 );
 
+function getServiceDepartment(s) {
+  if (s.departmentId) {
+    if (s.departmentId === "cosmetology") return "skin-hair-laser";
+    return s.departmentId;
+  }
+  const text = `${s.name || ""} ${s.description || ""}`.toLowerCase();
+  if (text.includes("skin, diabetes") || text.includes("combined") || text.includes("all-round")) {
+    return "all-departments";
+  }
+  if (
+    text.includes("skin") ||
+    text.includes("hair") ||
+    text.includes("acne") ||
+    text.includes("laser") ||
+    text.includes("prp") ||
+    text.includes("gfc") ||
+    text.includes("peel") ||
+    text.includes("facial") ||
+    text.includes("derma") ||
+    text.includes("aesthetic") ||
+    text.includes("scalp") ||
+    text.includes("pore") ||
+    text.includes("wart") ||
+    text.includes("mole")
+  ) {
+    return "skin-hair-laser";
+  }
+  if (
+    text.includes("diabet") ||
+    text.includes("sugar") ||
+    text.includes("glucose") ||
+    text.includes("insulin") ||
+    text.includes("hba1c") ||
+    text.includes("neuropathy") ||
+    text.includes("foot")
+  ) {
+    return "diabetology";
+  }
+  return "general";
+}
+
 const generateClinicSlots = (dateYmd) => {
   const d = new Date(`${dateYmd}T12:00:00+05:30`);
   if (d.getDay() === 0) return []; // Sunday: Holiday
@@ -479,12 +520,12 @@ export default function Booking() {
                     {catalog.services
                       .filter((s) => {
                         if (deptFilter === "all") return true;
-                        if (s.departmentId) return s.departmentId === deptFilter;
+                        const dept = getServiceDepartment(s);
+                        if (dept === "all-departments") return true;
+                        if (dept === deptFilter) return true;
+                        if (s.departmentId === deptFilter) return true;
                         if (String(s.id).startsWith(deptFilter)) return true;
-                        const matchedDept = servicesSection.departments.find((d) =>
-                          d.cards.some((c) => c.enTitle.toLowerCase() === s.name.toLowerCase())
-                        );
-                        return matchedDept?.id === deptFilter;
+                        return false;
                       })
                       .map((s) => {
                         const isSelected = String(s.id) === serviceId;
