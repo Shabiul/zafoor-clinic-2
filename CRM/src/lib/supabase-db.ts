@@ -178,6 +178,7 @@ function buildSelect(tableName: string, include?: Record<string, any>, select?: 
   const parts: string[] = []
   if (select) {
     for (const [key, val] of Object.entries(select)) {
+      if (key === "_count") continue
       if (val === true) {
         parts.push(key)
       } else if (typeof val === "object") {
@@ -191,6 +192,7 @@ function buildSelect(tableName: string, include?: Record<string, any>, select?: 
   parts.push("*")
   if (include) {
     for (const [key, val] of Object.entries(include)) {
+      if (key === "_count") continue
       if (val) {
         const rel = RELATION_MAP[tableName]?.[key] || `${key}:${key.charAt(0).toUpperCase() + key.slice(1)}(*)`
         parts.push(rel)

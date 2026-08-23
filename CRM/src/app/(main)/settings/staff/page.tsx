@@ -89,7 +89,7 @@ export default async function StaffManagementPage() {
 
         {/* Tab 1: Staff Accounts */}
         <TabsContent value="staff-list" className="space-y-4 outline-none">
-          <StaffTable staffList={staffList} />
+          <StaffTable staffList={staffList as any} />
         </TabsContent>
 
         {/* Tab 2: Real-time Activity History */}
