@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { PatientPicker } from "@/components/appointments/patient-picker"
+import { MedicinePicker } from "@/components/billing/medicine-picker"
 import { formatCurrency } from "@/lib/format"
 import { createBill } from "@/actions/billing"
 import { getPatientInsurances } from "@/actions/patients"
@@ -31,10 +32,12 @@ export function BillForm({
   services,
   initialPatient,
   defaultAppointmentId,
+  initialItems,
 }: {
   services: Service[]
   initialPatient: { id: string; name: string; uhid: string; phone: string; insurances: Insurance[] } | null
   defaultAppointmentId?: string
+  initialItems?: LineItem[]
 }) {
   const router = useRouter()
   const [patientId, setPatientId] = useState(initialPatient?.id ?? "")
@@ -43,7 +46,7 @@ export function BillForm({
   const [insuranceId, setInsuranceId] = useState("")
   const [serviceId, setServiceId] = useState("")
   const [discountAmount, setDiscountAmount] = useState("0")
-  const [items, setItems] = useState<LineItem[]>([{ ...emptyItem }])
+  const [items, setItems] = useState<LineItem[]>(initialItems && initialItems.length > 0 ? initialItems : [{ ...emptyItem }])
   const [pending, startTransition] = useTransition()
 
   useEffect(() => {
@@ -63,6 +66,13 @@ export function BillForm({
 
   function addItem() {
     setItems((prev) => [...prev, { ...emptyItem }])
+  }
+
+  function addMedicineItem(item: { name: string; unitPrice: number | null }) {
+    setItems((prev) => {
+      const rest = prev.filter((it) => it.description.trim() || it.unitPrice.trim())
+      return [...rest, { description: item.name, quantity: "1", unitPrice: item.unitPrice != null ? String(item.unitPrice) : "0", taxRatePercent: "0" }]
+    })
   }
 
   function removeItem(index: number) {
@@ -204,6 +214,8 @@ export function BillForm({
       <Card>
         <CardHeader><CardTitle className="text-base">Line Items</CardTitle></CardHeader>
         <CardContent className="space-y-3">
+          <MedicinePicker onSelect={(item) => addMedicineItem({ name: item.name, unitPrice: item.unitPrice })} />
+
           {items.map((item, index) => (
             <div key={index} className="grid grid-cols-[1fr_auto] gap-2 rounded-lg border p-3">
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">

@@ -1,19 +1,23 @@
 "use client"
 
-import { Pill, Printer, Stethoscope, Clock, Calendar, User, FileText } from "lucide-react"
+import Link from "next/link"
+import { Pill, Printer, Calendar, Plus, FileText, ScanLine, Receipt } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { formatDateTime, formatDate } from "@/lib/format"
+import { buildPrescriptionPrintHtml } from "@/lib/print-prescription"
 import type { getPatientPrescriptions } from "@/actions/patients"
 
 type Prescriptions = Awaited<ReturnType<typeof getPatientPrescriptions>>
 
 export function PrescriptionsTab({
+  patientId,
   patientName,
   uhid,
   prescriptions,
 }: {
+  patientId: string
   patientName: string
   uhid: string
   prescriptions: Prescriptions
@@ -21,104 +25,12 @@ export function PrescriptionsTab({
   function handlePrint(prescription: Prescriptions[number]) {
     const printWindow = window.open("", "_blank")
     if (!printWindow) return
-
-    const itemsHtml = prescription.items
-      .map(
-        (item, idx) => `
-        <tr style="border-bottom: 1px solid #e5e7eb;">
-          <td style="padding: 10px 8px; font-weight: 600;">${idx + 1}. ${item.medicineName}</td>
-          <td style="padding: 10px 8px;">${item.dosage || "—"}</td>
-          <td style="padding: 10px 8px;">${item.frequency || "—"}</td>
-          <td style="padding: 10px 8px;">${item.duration || "—"}</td>
-          <td style="padding: 10px 8px; color: #4b5563; font-style: italic;">${item.instructions || "—"}</td>
-        </tr>
-      `
+    printWindow.document.write(
+      buildPrescriptionPrintHtml(
+        { ...prescription, issuedAt: prescription.issuedAt || new Date() },
+        { name: patientName, uhid }
       )
-      .join("")
-
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Prescription — ${patientName} (${uhid})</title>
-          <style>
-            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; color: #1f2937; }
-            .header { border-bottom: 2px solid #0f766e; padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-start; }
-            .clinic-name { font-size: 24px; font-weight: bold; color: #0f766e; }
-            .clinic-info { font-size: 12px; color: #6b7280; line-height: 1.4; }
-            .patient-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; display: flex; justify-content: space-between; }
-            .section-title { font-size: 16px; font-weight: bold; color: #0f766e; margin-top: 20px; margin-bottom: 10px; }
-            table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
-            th { text-align: left; background: #f3f4f6; padding: 10px 8px; border-bottom: 2px solid #d1d5db; font-size: 12px; text-transform: uppercase; color: #4b5563; }
-            .footer { margin-top: 60px; border-top: 1px solid #e5e7eb; padding-top: 20px; display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; }
-            .doctor-sig { text-align: right; }
-            @media print { body { margin: 20px; } button { display: none; } }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <div>
-              <div class="clinic-name">ZAFOOR CLINIC</div>
-              <div class="clinic-info">
-                No 69/70, St. Xavier Street, Broadway, Sevenwells, Chennai - 600001 (Landmark: Opposite Huda Mosque)<br/>
-                Phone: +91 89403 99403 | Email: ZafoorClinic@gmail.com
-              </div>
-            </div>
-            <div style="text-align: right;">
-              <div style="font-size: 18px; font-weight: bold; color: #0f766e;">Rx PRESCRIPTION</div>
-              <div style="font-size: 13px; color: #6b7280;">Date: ${formatDate(prescription.issuedAt || new Date())}</div>
-            </div>
-          </div>
-
-          <div class="patient-box">
-            <div>
-              <strong>Patient:</strong> ${patientName} &nbsp;|&nbsp; <strong>UHID:</strong> ${uhid}
-            </div>
-            <div>
-              <strong>Doctor:</strong> Dr. ${prescription.doctor?.name || "Consultant"}
-            </div>
-          </div>
-
-          ${prescription.diagnosis ? `<div style="margin-bottom: 15px; font-size: 14px;"><strong>Diagnosis:</strong> ${prescription.diagnosis}</div>` : ""}
-
-          <div class="section-title">Rx Prescribed Medications</div>
-          <table>
-            <thead>
-              <tr>
-                <th>Medicine / Strength</th>
-                <th>Dosage</th>
-                <th>Frequency</th>
-                <th>Duration</th>
-                <th>Special Instructions</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${itemsHtml}
-            </tbody>
-          </table>
-
-          ${
-            prescription.notes
-              ? `<div style="margin-top: 25px; font-size: 14px; background: #fafafa; padding: 12px; border-left: 3px solid #0f766e;">
-                  <strong>Doctor's Notes & Advice:</strong><br/>
-                  ${prescription.notes}
-                </div>`
-              : ""
-          }
-
-          <div class="footer">
-            <div>Generated by Zafoor Clinic Electronic Medical Record System</div>
-            <div class="doctor-sig">
-              <br/><br/>
-              _____________________________________<br/>
-              <strong>Dr. ${prescription.doctor?.name || "Consulting Physician"}</strong><br/>
-              ${prescription.doctor?.specialization || "Zafoor Medical Staff"}
-            </div>
-          </div>
-          <script>window.print();</script>
-        </body>
-      </html>
-    `)
+    )
     printWindow.document.close()
   }
 
@@ -131,6 +43,17 @@ export function PrescriptionsTab({
             All medications and prescriptions written across consultations ({prescriptions.length} total).
           </p>
         </div>
+        <Button
+          size="sm"
+          className="gap-1.5"
+          nativeButton={false}
+          render={
+            <Link href={`/prescriptions/new?patientId=${patientId}`}>
+              <Plus className="h-3.5 w-3.5" />
+              New Prescription
+            </Link>
+          }
+        />
       </div>
 
       {prescriptions.length === 0 ? (
@@ -160,10 +83,22 @@ export function PrescriptionsTab({
                             {prescription.doctor.specialization}
                           </Badge>
                         )}
+                        <Badge
+                          variant={prescription.source === "SCANNED" ? "secondary" : "default"}
+                          className="gap-1 text-xs"
+                        >
+                          {prescription.source === "SCANNED" ? (
+                            <ScanLine className="h-3 w-3" />
+                          ) : (
+                            <FileText className="h-3 w-3" />
+                          )}
+                          {prescription.source === "SCANNED" ? "Scanned" : "Digital"}
+                        </Badge>
                       </div>
                       <p className="text-xs text-muted-foreground flex items-center gap-1.5 mt-0.5">
                         <Calendar className="h-3.5 w-3.5" />
                         {formatDateTime(prescription.issuedAt || new Date())}
+                        {prescription.prescriptionNumber && <span>· {prescription.prescriptionNumber}</span>}
                         {prescription.encounter && (
                           <span className="text-primary font-medium">
                             · Linked to Consultation ({formatDate(prescription.encounter.encounterDate)})
@@ -173,15 +108,44 @@ export function PrescriptionsTab({
                     </div>
                   </div>
 
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-1.5 text-xs self-start sm:self-auto"
-                    onClick={() => handlePrint(prescription)}
-                  >
-                    <Printer className="h-3.5 w-3.5" />
-                    Print Rx
-                  </Button>
+                  <div className="flex gap-2 self-start sm:self-auto">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="gap-1.5 text-xs"
+                      nativeButton={false}
+                      render={
+                        <Link href={`/billing/new?patientId=${patientId}&prescriptionId=${prescription.id}`}>
+                          <Receipt className="h-3.5 w-3.5" />
+                          Bill Medicines
+                        </Link>
+                      }
+                    />
+                    {prescription.source === "SCANNED" && prescription.document ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="gap-1.5 text-xs"
+                        nativeButton={false}
+                        render={
+                          <a href={prescription.document.fileUrl} target="_blank" rel="noopener noreferrer">
+                            <FileText className="h-3.5 w-3.5" />
+                            View Scanned Copy
+                          </a>
+                        }
+                      />
+                    ) : (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-1.5 text-xs"
+                        onClick={() => handlePrint(prescription)}
+                      >
+                        <Printer className="h-3.5 w-3.5" />
+                        Print Rx
+                      </Button>
+                    )}
+                  </div>
                 </div>
 
                 {prescription.diagnosis && (
@@ -192,52 +156,70 @@ export function PrescriptionsTab({
                 )}
               </CardHeader>
 
-              <CardContent className="pt-4">
-                <div className="rounded-lg border overflow-hidden">
-                  <table className="w-full text-sm text-left">
-                    <thead className="bg-muted/50 text-xs uppercase text-muted-foreground font-semibold border-b">
-                      <tr>
-                        <th className="px-4 py-2.5">#</th>
-                        <th className="px-4 py-2.5">Medicine Name</th>
-                        <th className="px-4 py-2.5">Dosage</th>
-                        <th className="px-4 py-2.5">Frequency</th>
-                        <th className="px-4 py-2.5">Duration</th>
-                        <th className="px-4 py-2.5">Instructions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
-                      {prescription.items.length === 0 ? (
+              {prescription.source === "SCANNED" ? (
+                <CardContent className="pt-4">
+                  <p className="text-xs text-muted-foreground">
+                    {prescription.notes || "Scanned copy — see attached file."}
+                  </p>
+                </CardContent>
+              ) : (
+                <CardContent className="pt-4">
+                  <div className="rounded-lg border overflow-hidden">
+                    <table className="w-full text-sm text-left">
+                      <thead className="bg-muted/50 text-xs uppercase text-muted-foreground font-semibold border-b">
                         <tr>
-                          <td colSpan={6} className="px-4 py-3 text-center text-xs text-muted-foreground">
-                            No specific medication items listed.
-                          </td>
+                          <th className="px-4 py-2.5">#</th>
+                          <th className="px-4 py-2.5">Medicine Name</th>
+                          <th className="px-4 py-2.5">Dosage</th>
+                          <th className="px-4 py-2.5">Frequency</th>
+                          <th className="px-4 py-2.5">Duration</th>
+                          <th className="px-4 py-2.5">Instructions</th>
                         </tr>
-                      ) : (
-                        prescription.items.map((item, idx) => (
-                          <tr key={item.id} className="hover:bg-muted/20">
-                            <td className="px-4 py-2.5 text-xs text-muted-foreground font-mono">{idx + 1}</td>
-                            <td className="px-4 py-2.5 font-medium text-foreground">{item.medicineName}</td>
-                            <td className="px-4 py-2.5 text-xs">{item.dosage || "—"}</td>
-                            <td className="px-4 py-2.5 text-xs">
-                              <Badge variant="secondary" className="text-xs font-normal">
-                                {item.frequency || "—"}
-                              </Badge>
+                      </thead>
+                      <tbody className="divide-y divide-border">
+                        {prescription.items.length === 0 ? (
+                          <tr>
+                            <td colSpan={6} className="px-4 py-3 text-center text-xs text-muted-foreground">
+                              No specific medication items listed.
                             </td>
-                            <td className="px-4 py-2.5 text-xs">{item.duration || "—"}</td>
-                            <td className="px-4 py-2.5 text-xs text-muted-foreground">{item.instructions || "—"}</td>
                           </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-
-                {prescription.notes && (
-                  <div className="mt-3 p-3 bg-muted/30 rounded-lg text-xs text-muted-foreground border">
-                    <span className="font-semibold text-foreground">Clinical Advice & Notes:</span> {prescription.notes}
+                        ) : (
+                          prescription.items.map((item, idx) => (
+                            <tr key={item.id} className="hover:bg-muted/20">
+                              <td className="px-4 py-2.5 text-xs text-muted-foreground font-mono">{idx + 1}</td>
+                              <td className="px-4 py-2.5 font-medium text-foreground">{item.medicineName}</td>
+                              <td className="px-4 py-2.5 text-xs">{item.dosage || "—"}</td>
+                              <td className="px-4 py-2.5 text-xs">
+                                <Badge variant="secondary" className="text-xs font-normal">
+                                  {item.frequency || "—"}
+                                </Badge>
+                              </td>
+                              <td className="px-4 py-2.5 text-xs">{item.duration || "—"}</td>
+                              <td className="px-4 py-2.5 text-xs text-muted-foreground">{item.instructions || "—"}</td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
                   </div>
-                )}
-              </CardContent>
+
+                  {prescription.advice && (
+                    <div className="mt-3 p-3 bg-muted/30 rounded-lg text-xs text-muted-foreground border">
+                      <span className="font-semibold text-foreground">Advice:</span> {prescription.advice}
+                    </div>
+                  )}
+                  {prescription.reviewAfter && (
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      <span className="font-semibold text-foreground">Review after:</span> {prescription.reviewAfter}
+                    </p>
+                  )}
+                  {prescription.notes && (
+                    <div className="mt-3 p-3 bg-muted/30 rounded-lg text-xs text-muted-foreground border">
+                      <span className="font-semibold text-foreground">Notes:</span> {prescription.notes}
+                    </div>
+                  )}
+                </CardContent>
+              )}
             </Card>
           ))}
         </div>

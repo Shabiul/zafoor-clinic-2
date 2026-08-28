@@ -24,7 +24,7 @@ export default function About() {
           <div className="about-media">
             <div className="about-media-frame">
               <img
-                src="https://4pkrmvqtrlawvaa5.public.blob.vercel-storage.com/images/hero/storefront.jpg"
+                src="/images/clinic-images/storefront.png?v=2"
                 alt="Zafoor Clinic storefront and glass entrance, Dr. Mufeeda Roohi signage, St. Xavier Street, Broadway, Sevenwells, Chennai"
                 width="800"
                 height="600"
