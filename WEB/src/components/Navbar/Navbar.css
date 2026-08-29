@@ -48,7 +48,8 @@
   font-size: 1.38rem;
   font-weight: 700;
   letter-spacing: 1.2px;
-  color: var(--text-on-dark);
+  color: var(--color-sagegold-light);
+  text-shadow: 0 1px 2px rgba(60, 56, 38, 0.35);
   white-space: nowrap;
   line-height: 1;
 }
