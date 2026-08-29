@@ -48,7 +48,7 @@ export const hero = {
 };
 
 export const doctorBanner = {
-  background: "https://4pkrmvqtrlawvaa5.public.blob.vercel-storage.com/images/hero/storefront.jpg",
+  background: "/images/clinic-images/storefront.png?v=2",
   logo: "https://4pkrmvqtrlawvaa5.public.blob.vercel-storage.com/logo/zafoor-clinic-logo.png",
   photo: "https://4pkrmvqtrlawvaa5.public.blob.vercel-storage.com/logo/dr-mufeeda-roohi.jpg",
   eyebrow: "Meet Your Doctor",

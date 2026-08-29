@@ -30,18 +30,27 @@ export async function getStaffMembers() {
 
   const staff = await prisma.user.findMany({
     orderBy: [{ active: "desc" }, { name: "asc" }],
-    include: {
-      _count: {
-        select: {
-          appointmentsAsDoctor: true,
-          encountersAsDoctor: true,
-          registeredPatients: true,
-        },
-      },
-    },
   })
 
-  return staff.map((s) => serializeDecimal(s, ["consultationFee"]))
+  const staffWithCounts = await Promise.all(
+    staff.map(async (s) => {
+      const [appointmentsCount, encountersCount, patientsCount] = await Promise.all([
+        prisma.appointment.count({ where: { doctorId: s.id } }),
+        prisma.encounter.count({ where: { doctorId: s.id } }),
+        prisma.patient.count({ where: { registeredById: s.id } }),
+      ])
+      return {
+        ...s,
+        _count: {
+          appointmentsAsDoctor: appointmentsCount,
+          encountersAsDoctor: encountersCount,
+          registeredPatients: patientsCount,
+        },
+      }
+    })
+  )
+
+  return staffWithCounts.map((s) => serializeDecimal(s, ["consultationFee"]))
 }
 
 export async function createStaffMember(input: CreateStaffInput) {
@@ -372,20 +381,20 @@ export async function getStaffActivityHistory(params?: { staffId?: string; limit
   // Payments
   for (const p of payments) {
     const pat = p.patient
-    const patName = `${pat.firstName} ${pat.lastName || ""}`.trim()
+    const patName = pat ? `${pat.firstName} ${pat.lastName || ""}`.trim() : "Patient"
     activityStream.push({
       id: `pay-${p.id}`,
-      timestamp: p.paidAt,
+      timestamp: new Date(p.paidAt),
       staffName: p.receivedBy?.name || "Staff Reception",
       staffEmail: p.receivedBy?.email || "staff@zafoorclinic.com",
       staffRole: p.receivedBy?.role || "RECEPTIONIST",
       category: "PAYMENT_COLLECTED",
-      title: `Payment Recorded: ₹${Number(p.amount)} (${p.method})`,
-      details: `Received ₹${Number(p.amount)} via ${p.method}${p.bill?.billNumber ? ` for Bill #${p.bill.billNumber}` : ""}`,
-      patientUhid: pat.uhid,
+      title: `Payment Recorded: ₹${Number(p.amount || 0)} (${p.method || "CASH"})`,
+      details: `Received ₹${Number(p.amount || 0)} via ${p.method || "CASH"}${p.bill?.billNumber ? ` for Bill #${p.bill.billNumber}` : ""}`,
+      patientUhid: pat?.uhid || null,
       patientName: patName,
-      amount: Number(p.amount),
-      paymentMethod: p.method,
+      amount: Number(p.amount || 0),
+      paymentMethod: p.method || "CASH",
     })
   }
 
@@ -394,14 +403,15 @@ export async function getStaffActivityHistory(params?: { staffId?: string; limit
     const isOut = it.type === "STOCK_OUT"
     const pat = it.patient
     const patName = pat ? `${pat.firstName} ${pat.lastName || ""}`.trim() : null
+    const itemName = it.item?.name || "Medicine Item"
     activityStream.push({
       id: `inv-${it.id}`,
-      timestamp: it.timestamp,
+      timestamp: new Date(it.timestamp),
       staffName: it.performedBy?.name || "Staff Reception",
       staffEmail: it.performedBy?.email || "staff@zafoorclinic.com",
       staffRole: it.performedBy?.role || "RECEPTIONIST",
       category: isOut ? "MEDICINE_DISPENSED" : "MEDICINE_RETURNED",
-      title: `${isOut ? "Medicine Dispensed/Sold" : "Medicine Returned"}: ${it.item.name} (${Math.abs(it.quantity)} units)`,
+      title: `${isOut ? "Medicine Dispensed/Sold" : "Medicine Returned"}: ${itemName} (${Math.abs(Number(it.quantity) || 0)} units)`,
       details: `${it.reason || (isOut ? "Prescription / counter sale" : "Patient stock return")}`,
       patientUhid: pat?.uhid ?? null,
       patientName: patName,
@@ -411,18 +421,20 @@ export async function getStaffActivityHistory(params?: { staffId?: string; limit
   // Appointments
   for (const apt of appointments) {
     const pat = apt.patient
-    const patName = `${pat.firstName} ${pat.lastName || ""}`.trim()
+    const patName = pat ? `${pat.firstName} ${pat.lastName || ""}`.trim() : "Patient"
     const isWalkIn = apt.type === "WALK_IN"
+    const docName = apt.doctor?.name || "Dr. Mufeeda Roohi"
+    const scheduledStr = apt.scheduledAt ? new Date(apt.scheduledAt).toLocaleDateString() : "Scheduled"
     activityStream.push({
       id: `apt-${apt.id}`,
-      timestamp: apt.createdAt,
+      timestamp: new Date(apt.createdAt),
       staffName: apt.createdBy?.name || "Staff Reception",
       staffEmail: apt.createdBy?.email || "staff@zafoorclinic.com",
       staffRole: apt.createdBy?.role || "RECEPTIONIST",
       category: isWalkIn ? "WALK_IN_TOKEN" : "APPOINTMENT_SCHEDULED",
-      title: `${isWalkIn ? "Walk-in Token Issued" : "Appointment Booked"}: ${apt.appointmentCode}`,
-      details: `Doctor: ${apt.doctor.name} · Date: ${apt.scheduledAt.toLocaleDateString()}`,
-      patientUhid: pat.uhid,
+      title: `${isWalkIn ? "Walk-in Token Issued" : "Appointment Booked"}: ${apt.appointmentCode || ""}`,
+      details: `Doctor: ${docName} · Date: ${scheduledStr}`,
+      patientUhid: pat?.uhid || null,
       patientName: patName,
     })
   }
@@ -431,13 +443,13 @@ export async function getStaffActivityHistory(params?: { staffId?: string; limit
   for (const a of auditLogs) {
     activityStream.push({
       id: `aud-${a.id}`,
-      timestamp: a.timestamp,
+      timestamp: new Date(a.timestamp),
       staffName: a.userName || "System User",
       staffEmail: a.userRole || "",
       staffRole: a.userRole || "USER",
       category: "SYSTEM_AUDIT",
-      title: `Action: ${a.action.replace(/_/g, " ")}`,
-      details: `Target: ${a.entityType} ${a.entityId || ""}`,
+      title: `Action: ${(a.action || "").replace(/_/g, " ")}`,
+      details: `Target: ${a.entityType || ""} ${a.entityId || ""}`,
     })
   }
 
